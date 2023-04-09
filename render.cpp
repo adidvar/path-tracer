@@ -1,5 +1,6 @@
 #include "render.h"
 #include "figures.h"
+#include "glm/gtx/transform.hpp"
 
 #include <array>
 #include <random>
@@ -26,31 +27,31 @@ Material mm03( color, 0, 1, 1);
 Material mm13( color, 0, 0.66, 1 );
 Material mm23( color, 0, 0.33, 1);
 Material mm33( color, 0, 0,  1);
-Material light({ 1,1,0.7 }, 8, 0, 0);
+Material light({ 1,1,1 }, 2, 0, 0);
 
 std::mt19937_64 random;
 
 
 std::vector<Sphere> objects{
-Sphere(glm::vec3{-0.6,0.6,-1.8} , 0.2 , mm00),
-Sphere(glm::vec3{-0.2,0.6,-1.8} , 0.2 , mm10),
-Sphere(glm::vec3{ 0.2,0.6,-1.8} , 0.2 , mm20),
-Sphere(glm::vec3{ 0.6,0.6,-1.8} , 0.2 , mm30),
+Sphere(glm::vec3{-0.6,0.6,0} , 0.2 , mm00),
+Sphere(glm::vec3{-0.2,0.6,0} , 0.2 , mm10),
+Sphere(glm::vec3{ 0.2,0.6,0} , 0.2 , mm20),
+Sphere(glm::vec3{ 0.6,0.6,0} , 0.2 , mm30),
 
-Sphere(glm::vec3{-0.6,0.2,-1.8} , 0.2 , mm01),
-Sphere(glm::vec3{-0.2,0.2,-1.6} , 0.2 , mm11),
-Sphere(glm::vec3{ 0.2,0.2,-1.6} , 0.2 , mm21),
-Sphere(glm::vec3{ 0.6,0.2,-1.8} , 0.2 , mm31),
+Sphere(glm::vec3{-0.6,0.2,0} , 0.2 , mm01),
+Sphere(glm::vec3{-0.2,0.2,0} , 0.2 , mm11),
+Sphere(glm::vec3{ 0.2,0.2,0} , 0.2 , mm21),
+Sphere(glm::vec3{ 0.6,0.2,0} , 0.2 , mm31),
 
-Sphere(glm::vec3{-0.6,-0.2,-1.8} , 0.2 , mm02),
-Sphere(glm::vec3{-0.2,-0.2,-1.6} , 0.2 , mm12),
-Sphere(glm::vec3{ 0.2,-0.2,-1.6} , 0.2 , mm22),
-Sphere(glm::vec3{ 0.6,-0.2,-1.8} , 0.2 , mm32),
+Sphere(glm::vec3{-0.6,-0.2,0} , 0.2 , mm02),
+Sphere(glm::vec3{-0.2,-0.2,0} , 0.2 , mm12),
+Sphere(glm::vec3{ 0.2,-0.2,0} , 0.2 , mm22),
+Sphere(glm::vec3{ 0.6,-0.2,0} , 0.2 , mm32),
 
-Sphere(glm::vec3{-0.6,-0.6,-1.8} , 0.2 , mm03),
-Sphere(glm::vec3{-0.2,-0.6,-1.8} , 0.2 , mm13),
-Sphere(glm::vec3{ 0.2,-0.6,-1.8} , 0.2 , mm23),
-Sphere(glm::vec3{ 0.6,-0.6,-1.8} , 0.2 , mm33),
+Sphere(glm::vec3{-0.6,-0.6,0} , 0.2 , mm03),
+Sphere(glm::vec3{-0.2,-0.6,0} , 0.2 , mm13),
+Sphere(glm::vec3{ 0.2,-0.6,0} , 0.2 , mm23),
+Sphere(glm::vec3{ 0.6,-0.6,0} , 0.2 , mm33),
 
 
 //Sphere(glm::vec3{-0.0,0.0,-1.8} , 0.1 , light),
@@ -128,10 +129,11 @@ struct global_light {
 };
 
 std::vector<global_light> glight{
-	{{1,0.8,1},glm::normalize(glm::vec3{0,1,0}),0,0.03},
-	{{1,0.8,1},glm::normalize(glm::vec3{0,-1,0}),0,0.03},
-	{{1,1,0.8},glm::normalize(glm::vec3{0,1,-1}),0,0.5},
-	{{1,1,0.8},glm::normalize(glm::vec3{0,1,-1}),0.90,10},
+
+//	{{1,0.8,1},glm::normalize(glm::vec3{0,1,0}),0,0.08},
+//	{{1,0.8,1},glm::normalize(glm::vec3{0,-1,0}),0,0.2},
+//	{{1,1,0.8},glm::normalize(glm::vec3{0,1,0}),0,0.5},
+	{{1,1,0.8},glm::normalize(glm::vec3{0,1,0}),0.90,10},
 //	{{1,1,1},glm::normalize(glm::vec3{0,1,1}),0.8,0.2},
 //	{{1,1,1},glm::normalize(glm::vec3{-1,0,0}),0,0.2},
 //	{{0,0,1},glm::normalize(glm::vec3{0,-2,-1}),0.7,1},
@@ -188,18 +190,31 @@ glm::vec3 RayTrace(glm::vec3 ray_point , glm::vec3 ray_normal , size_t depth)
 glm::vec3 buffer[WIDTH][HEIGHT] = {};
 size_t iteration = 1;
 
+size_t iterations_per_frame = 10;
+
+float screen_ratio = (float)WIDTH / HEIGHT;
+float scale_factor = 0.5;
+
 void task(size_t current , size_t max) {
-	glm::vec3 projection_center{ 0, 0, -3 };
+	glm::vec3 projection_center{ 0, 0, -4 };
 	size_t delta = WIDTH / max;
 	for (size_t x = current; x < WIDTH; x+=max) {
 		for (size_t y = 0; y < HEIGHT; y++) {
 	
-			glm::vec3 ray_point{ -2.0 * x / WIDTH +1 , -2.0 * y / HEIGHT + 1 , -2 };
+			glm::vec3 ray_point{ (-2.0 * x / WIDTH +1) * screen_ratio , -2.0 * y / HEIGHT + 1 , -2 };
+			ray_point *= scale_factor;
 			glm::vec3 ray_normal = glm::normalize(ray_point-projection_center);
 
-			auto color = RayTrace(ray_point, ray_normal, 4);
+			buffer[x][y] *= iteration;
 
-			buffer[x][y] = (color+buffer[x][y]*(float)iteration)/(float)(iteration+1);
+			for (size_t i = 0; i < iterations_per_frame; i++) {
+				auto color = RayTrace(ray_point, ray_normal, 4);
+
+				buffer[x][y] += color;
+			}
+
+			buffer[x][y] /= iteration+iterations_per_frame;
+
 		}
 	}
 }
@@ -216,6 +231,15 @@ ThreadPool pool(tasks);
 
 void render(uint32_t* scene) {
 	auto begin = std::chrono::high_resolution_clock::now();
+
+	/*
+	for (size_t x = 0; x < WIDTH; x++) {
+		for (size_t y = 0; y < HEIGHT; y++) {
+			buffer[x][y] = {};
+		}
+	}
+	*/
+	using namespace std;
 	
 	pool.Run();
 
@@ -227,7 +251,7 @@ void render(uint32_t* scene) {
 			scene[WIDTH * y + x] = vectocolor(tonemapping(buffer[x][y]));
 		}
 	}
-	iteration++;
+	iteration+=iterations_per_frame;
 
 	auto end = std::chrono::high_resolution_clock::now();
 	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << std::endl;

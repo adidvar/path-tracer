@@ -1,6 +1,7 @@
 #include <stdio.h> /* printf and fprintf */
 #include <iostream>
 #include "render.h"
+#include "glm/gtx/transform.hpp"
 
 #include <SDL2/SDL.h>
 
@@ -29,6 +30,15 @@ int main(int argc, char** argv)
 		std::cout << "Failed to get the surface from the window\n";
 		std::cout << "SDL2 Error: " << SDL_GetError() << "\n";
 		return -1;
+	}
+
+	glm::mat4 trans = glm::rotate(0.78f, glm::vec3(0, 0, 1));
+	trans = glm::rotate(trans,-0.9f, glm::vec3(1, 0, 0));
+
+	for (auto &sphere : objects) {
+		glm::vec4 ful_vec = glm::vec4(sphere.m_position, 1);
+		glm::vec4 ful_trans = ful_vec*trans;
+		sphere.m_position = { ful_trans.x,ful_trans.y,ful_trans.z };
 	}
 
 	bool keep_window_open = true;

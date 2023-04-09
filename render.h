@@ -7,8 +7,8 @@
 #include <mutex>
 #include <condition_variable>
 
-#define WIDTH 800
-#define HEIGHT 800
+#define WIDTH 1920 
+#define HEIGHT 1080 
 
 extern std::vector<Sphere> objects;
 
@@ -16,49 +16,50 @@ void render(uint32_t* scene);
 bool find_interception(glm::vec3 ray_point, glm::vec3 ray_normal, glm::vec3& point, glm::vec3& normal, size_t& obj_index);
 
 class ThreadPool {
+	//sync
 	std::mutex mutex;
 	std::condition_variable variable;
-	std::atomic<bool> working = false;
+	std::atomic<size_t> flags = 0;
 	bool exit = false;
-	std::atomic<size_t> counter = 0;
+
+	size_t threads_counter;
 	std::vector <std::function<void(void)>> tasks;
 	std::vector <std::thread*> threads;
 public:
-	ThreadPool(std::vector <std::function<void(void)>> tasks) :
+	ThreadPool(const std::vector<std::function<void(void)>> &tasks) :
 	tasks(tasks)
 	{
+		threads_counter = tasks.size();
 		for (size_t i = 0; i < tasks.size();  i++) {
 			threads.push_back(new std::thread(std::bind(&ThreadPool::thread_code, this, i)));
 		}
 	}
 	~ThreadPool() {
 		exit = true;
-		for (size_t i = threads.size() - 1; i >= 0; i--) {
-			if(threads[i]->joinable())
-				threads[i]->join();
-			delete threads[i];
+		while ( threads.size() ) 
+		{
+			if(threads.back()->joinable())
+				threads.back()->join();
+			delete threads.back();
 			threads.pop_back();
 		}
 	}
 	void Run() {
-
-		working = true;
+		flags = (1ULL << threads_counter)-1;
 		variable.notify_all();
-		while (counter != ((1<<tasks.size()))-1)
+		while (flags)
 			std::this_thread::yield();
-		working = false;
-		counter = 0;
 	}
 private:
 	void thread_code(size_t i) {
-		while (exit == false) {
+		while (!exit) {
 			{
 				std::unique_lock guard(mutex);
-				while (working == false)
+				while ((flags & (1ULL << i)) == 0)
 					variable.wait(guard);
 			}
 			tasks[i]();
-			counter |= (1ULL << i);
+			flags &= ~(1ULL << i);
 		}
 	}
 };
