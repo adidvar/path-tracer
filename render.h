@@ -44,7 +44,7 @@ public:
 
 		working = true;
 		variable.notify_all();
-		while (counter != (1<<tasks.size())-1)
+		while (counter != ((1<<tasks.size()))-1)
 			std::this_thread::yield();
 		working = false;
 		counter = 0;
@@ -58,7 +58,7 @@ private:
 					variable.wait(guard);
 			}
 			tasks[i]();
-			counter |= (1 << i);
+			counter |= (1ULL << i);
 		}
 	}
 };

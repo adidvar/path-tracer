@@ -7,38 +7,68 @@
 #include <chrono>
 #include <iostream>
 
-glm::vec3 environment = glm::vec3(0.01, 0.01, 0.01);
 
+glm::vec3 color = { 1,0,0 };
 
-Material red( glm::vec3(1, 1, 1), false, 0.5 );
-Material mate( glm::vec3(1, 0.9, 1), false, 1 );
-Material mirror( glm::vec3(1, 1, 1), false, 0.05 );
-Material light2( glm::vec3(1, 1, 0.2), true, 0 );
-Material light3( glm::vec3(1, 1, 1), true, 0 );
-Material light4( glm::vec3(1, 0, 0.2), true, 0 );
-Material light5( glm::vec3(0, 1, 1), true, 0 );
-Material light6( glm::vec3(1,1 , 1), true, 0.5 );
+Material mm00( color, 0, 1,0 );
+Material mm10( color, 0, 0.66,0 );
+Material mm20( color, 0, 0.33,0 );
+Material mm30( color, 0, 0, 0.0 );
+Material mm01( color, 0, 1, 0.33 );
+Material mm11( color, 0, 0.66, 0.33);
+Material mm21( color, 0, 0.33, 0.33 );
+Material mm31( color, 0, 0,  0.33 );
+Material mm02( color, 0, 1, 0.66);
+Material mm12( color, 0, 0.66, 0.66 );
+Material mm22( color, 0, 0.33, 0.66);
+Material mm32( color, 0, 0, 0.66);
+Material mm03( color, 0, 1, 1);
+Material mm13( color, 0, 0.66, 1 );
+Material mm23( color, 0, 0.33, 1);
+Material mm33( color, 0, 0,  1);
+Material light({ 1,1,0.7 }, 8, 0, 0);
 
 std::mt19937_64 random;
 
+
 std::vector<Sphere> objects{
-Sphere(glm::vec3{-0.5,0,2} , 0.3 , mate),
-Sphere(glm::vec3{0,-0.5,2} , 0.3 , mate),
-Sphere(glm::vec3{-0.5,-0.5,2} , 0.4 , mate),
-Sphere(glm::vec3{+0.5,+0.5,2} , 0.4 , mate),
-Sphere(glm::vec3{0.5,-0.5,2} , 0.4 , mate),
-Sphere(glm::vec3{-0.5,0.5,2} , 0.4 , mate),
-Sphere(glm::vec3{0.5,0,2} , 0.3 , mate),
-Sphere(glm::vec3{0,0.5,2} , 0.3 , mate),
-Sphere(glm::vec3{0,0,2} , 0.2 , red),
-Sphere(glm::vec3{0,-9,3} , 6 , light2),
-Sphere(glm::vec3{0,9,3} , 6 , light3),
-Sphere(glm::vec3{-9,0,3} , 6 , light4),
-Sphere(glm::vec3{9,0,3} , 6 , light5),
-Sphere(glm::vec3{-0.18,-0.18,1.8} , 0.06 , light6)
+Sphere(glm::vec3{-0.6,0.6,-1.8} , 0.2 , mm00),
+Sphere(glm::vec3{-0.2,0.6,-1.8} , 0.2 , mm10),
+Sphere(glm::vec3{ 0.2,0.6,-1.8} , 0.2 , mm20),
+Sphere(glm::vec3{ 0.6,0.6,-1.8} , 0.2 , mm30),
+
+Sphere(glm::vec3{-0.6,0.2,-1.8} , 0.2 , mm01),
+Sphere(glm::vec3{-0.2,0.2,-1.6} , 0.2 , mm11),
+Sphere(glm::vec3{ 0.2,0.2,-1.6} , 0.2 , mm21),
+Sphere(glm::vec3{ 0.6,0.2,-1.8} , 0.2 , mm31),
+
+Sphere(glm::vec3{-0.6,-0.2,-1.8} , 0.2 , mm02),
+Sphere(glm::vec3{-0.2,-0.2,-1.6} , 0.2 , mm12),
+Sphere(glm::vec3{ 0.2,-0.2,-1.6} , 0.2 , mm22),
+Sphere(glm::vec3{ 0.6,-0.2,-1.8} , 0.2 , mm32),
+
+Sphere(glm::vec3{-0.6,-0.6,-1.8} , 0.2 , mm03),
+Sphere(glm::vec3{-0.2,-0.6,-1.8} , 0.2 , mm13),
+Sphere(glm::vec3{ 0.2,-0.6,-1.8} , 0.2 , mm23),
+Sphere(glm::vec3{ 0.6,-0.6,-1.8} , 0.2 , mm33),
+
+
+//Sphere(glm::vec3{-0.0,0.0,-1.8} , 0.1 , light),
+
 };
 
+glm::vec3 normal_color(glm::vec3 color) {
+	color.x = std::min(color.x, 1.0f);
+	color.y = std::min(color.y, 1.0f);
+	color.z = std::min(color.z, 1.0f);
+	color.x = std::max(color.x, 0.0f);
+	color.y = std::max(color.y, 0.0f);
+	color.z = std::max(color.z, 0.0f);
+	return color;
+}
+
 uint32_t vectocolor(glm::vec3 color){
+	color = normal_color(color);
 	uint8_t r = 255*color.x;
 	uint8_t g = 255*color.y;
 	uint8_t b = 255*color.z;
@@ -47,7 +77,8 @@ uint32_t vectocolor(glm::vec3 color){
 
 glm::vec3 tonemapping(glm::vec3 color)
 {
-	return { sqrt(color.x),sqrt(color.y),sqrt(color.z)};
+	//return { sqrt(color.x),sqrt(color.y),sqrt(color.z)};
+	return color;
 //	return color;
 }
 
@@ -89,35 +120,76 @@ bool find_interception(glm::vec3 ray_point, glm::vec3 ray_normal, glm::vec3 &poi
 	return true;
 }
 
+struct global_light {
+	glm::vec3 color;
+	glm::vec3 direction;
+	float edge;
+	float power;
+};
+
+std::vector<global_light> glight{
+	{{1,0.8,1},glm::normalize(glm::vec3{0,1,0}),0,0.03},
+	{{1,0.8,1},glm::normalize(glm::vec3{0,-1,0}),0,0.03},
+	{{1,1,0.8},glm::normalize(glm::vec3{0,1,-1}),0,0.5},
+	{{1,1,0.8},glm::normalize(glm::vec3{0,1,-1}),0.90,10},
+//	{{1,1,1},glm::normalize(glm::vec3{0,1,1}),0.8,0.2},
+//	{{1,1,1},glm::normalize(glm::vec3{-1,0,0}),0,0.2},
+//	{{0,0,1},glm::normalize(glm::vec3{0,-2,-1}),0.7,1},
+//	{{1,1,1},glm::normalize(glm::vec3{-1,2,-2}),0.9,2},
+//    {{1,1,1},glm::normalize(glm::vec3{1,-2,3}),0.9,2},
+};
+
+
 glm::vec3 RayTrace(glm::vec3 ray_point , glm::vec3 ray_normal , size_t depth) 
 {
-	glm::vec3 point, normal;
+	glm::vec3 o_point, o_normal;
 	size_t obj_index;
-	bool intersect = find_interception(ray_point, ray_normal, point, normal, obj_index);
+	bool intersect = find_interception(ray_point, ray_normal, o_point, o_normal, obj_index);
 
 	if (intersect == false) {
-		return environment;
-	}
-
-	if (objects[obj_index].m_material.is_light())
-	{
-		return objects[obj_index].m_material.Light();
+		glm::vec3 gillumination = { 0,0,0 };
+		for (auto light : glight) {
+			auto cosine = glm::dot(ray_normal, light.direction);
+			if (cosine > light.edge)
+				gillumination += (cosine - light.edge) * (1/(1-light.edge)) * light.power * light.color;
+		}
+		return gillumination;
 	}
 
 	if (depth == 0) {
 		return { 0,0,0 };
 	}
-	//glm::vec3 reflected = glm::reflect(ray_normal,normal);
-	glm::vec3 reflected = objects[obj_index].m_material.reflect(normal, ray_normal);
-	glm::vec3 reflected_color = 0.7f * RayTrace(point, reflected, depth - 1);
-	return objects[obj_index].m_material.Color(reflected_color);
+
+	auto smoothness = objects[obj_index].m_material.smoothness;
+	auto appleness = objects[obj_index].m_material.appleness;
+	auto light = objects[obj_index].m_material.light_power * objects[obj_index].m_material.color;
+	auto color = objects[obj_index].m_material.color;
+	auto specular_color = glm::vec3{ 0.8,0.8,0.8 };
+
+	auto reflected = glm::reflect(ray_normal, o_normal);
+
+	glm::vec3 diffuse = rdirection();
+	if (glm::dot(diffuse, o_normal) < 0.0)
+		diffuse = -diffuse;
+
+	float isSpecular = rvalue() < (1-appleness);
+
+	auto new_ray = glm::normalize((1 - smoothness * isSpecular ) * reflected + diffuse * smoothness * isSpecular);
+	auto incoming_power = glm::dot(new_ray, o_normal);
+
+	glm::vec3 incoming_light = incoming_power * RayTrace(o_point, new_ray, depth - 1);
+
+	auto col =  specular_color*(1-isSpecular) + (isSpecular)*color;
+	auto reflected_light = glm::vec3(incoming_light.x * col.x, incoming_light.y * col.y, incoming_light.z * col.z);
+
+	return (glm::length(reflected_light) > glm::length(light) ? reflected_light : light);
 }
 
 glm::vec3 buffer[WIDTH][HEIGHT] = {};
 size_t iteration = 1;
 
 void task(size_t current , size_t max) {
-	glm::vec3 projection_center{ 0, 0, -999999 };
+	glm::vec3 projection_center{ 0, 0, -3 };
 	size_t delta = WIDTH / max;
 	for (size_t x = current; x < WIDTH; x+=max) {
 		for (size_t y = 0; y < HEIGHT; y++) {
@@ -138,7 +210,6 @@ std::vector < std::function<void(void)>> tasks{
 	std::bind(&task,2,5),
 	std::bind(&task,3,5),
 	std::bind(&task,4,5)
-//	std::bind(&task,4,5)
 };
 
 ThreadPool pool(tasks);
