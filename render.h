@@ -7,8 +7,8 @@
 #include <mutex>
 #include <condition_variable>
 
-#define WIDTH 1920 
-#define HEIGHT 1080 
+#define WIDTH 1920
+#define HEIGHT 1080
 
 extern std::vector<Sphere> objects;
 

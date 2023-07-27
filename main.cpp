@@ -32,6 +32,7 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
+    /*
 	glm::mat4 trans = glm::rotate(0.78f, glm::vec3(0, 0, 1));
 	trans = glm::rotate(trans,-0.9f, glm::vec3(1, 0, 0));
 
@@ -40,8 +41,9 @@ int main(int argc, char** argv)
 		glm::vec4 ful_trans = ful_vec*trans;
 		sphere.m_position = { ful_trans.x,ful_trans.y,ful_trans.z };
 	}
+*/
 
-	bool keep_window_open = true;
+    bool keep_window_open = true;
 	while (keep_window_open)
 	{
 		SDL_Event e;

@@ -7,5 +7,5 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-add_executable(raytracing main.cpp render.cpp render.h figures.h figures.cpp materials.h materials.cpp)
+add_executable(raytracing main.cpp render.cpp render.h figures.h figures.cpp materials.h materials.cpp nrandom.h nrandom.cpp skybox.cpp skybox.h)
 target_link_libraries(raytracing ${CONAN_LIBS})
