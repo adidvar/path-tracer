@@ -4,8 +4,18 @@ project(RayTracer)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+file(COPY_FILE conanfile.txt ${CMAKE_BINARY_DIR}/conanfile.txt)
+set(CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR};${CMAKE_PREFIX_PATH}")
+set(CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR};${CMAKE_MODULE_PATH}")
 
-add_executable(raytracing main.cpp render.cpp render.h figures.h figures.cpp materials.h materials.cpp nrandom.h nrandom.cpp skybox.cpp skybox.h)
-target_link_libraries(raytracing ${CONAN_LIBS})
+find_package(SDL2 REQUIRED)
+find_package(glm REQUIRED)
+find_package(lodepng REQUIRED)
+
+file(GLOB files
+     "*.h"
+     "*.cpp"
+)
+
+add_executable(raytracing ${files})
+target_link_libraries(raytracing glm::glm SDL2::SDL2 lodepng::lodepng)

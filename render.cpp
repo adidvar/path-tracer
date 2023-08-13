@@ -32,29 +32,17 @@ Material mm33( color, 0, 0,  1);
 
 Material light({0.5, 0.1, 0.1}, 0, 0.7, 0.04);
 Material light1({0.1, 0.1, 0.1}, 0, 0.05, 0.1);
-Material light2({0.1, 0.1, 0.1}, 0, 0.01, 0.95);
+Material light2({0.05, 0.05, 0.1}, 0, 0.01, 0.95);
 
 std::mt19937_64 random;
 
-std::vector<Sphere> objects{/*
-    Sphere(glm::vec3{-0.6, 0.6, 0}, 0.2, mm00),
-    Sphere(glm::vec3{-0.2, 0.6, 0}, 0.2, mm10),
-    Sphere(glm::vec3{0.2, 0.6, 0}, 0.2, mm20),
-    Sphere(glm::vec3{0.6, 0.6, 0}, 0.2, mm30),
-
-    Sphere(glm::vec3{-0.6, 0.2, 0}, 0.2, mm01),
-    Sphere(glm::vec3{-0.2, 0.2, 0}, 0.2, mm11),
-    Sphere(glm::vec3{0.2, 0.2, 0}, 0.2, mm21),
-    Sphere(glm::vec3{0.6, 0.2, 0}, 0.2, mm31),
-
-    Sphere(glm::vec3{-0.6, -0.2, 0}, 0.2, mm02),
-    Sphere(glm::vec3{-0.2, -0.2, 0}, 0.2, mm12),
-    Sphere(glm::vec3{0.2, -0.2, 0}, 0.2, mm22),
-    Sphere(glm::vec3{0.6, -0.2, 0}, 0.2, mm32),
-
-    Sphere(glm::vec3{-0.6, -0.6, 0}, 0.2, mm03),
-*/
-                            Sphere(glm::vec3{2, 0, 0}, 1, light1),
+std::vector<Sphere> objects{Sphere(glm::vec3{2, 1, 0}, 1, light1),
+                            Sphere(glm::vec3{0, 1, 0}, 1, light),
+                            Sphere(glm::vec3{-2, 1, 0}, 1, light2),
+                            Sphere(glm::vec3{2, -1, 0}, 1, light1),
+                            Sphere(glm::vec3{2, -1, 0}, 1, light2),
+                            Sphere(glm::vec3{0, -1, 0}, 1, light),
+                            Sphere(glm::vec3{-2, 0, 0}, 1, light),
                             Sphere(glm::vec3{0, 0, 0}, 1, light2),
                             Sphere(glm::vec3{-2, 0, 0}, 1, light)};
 

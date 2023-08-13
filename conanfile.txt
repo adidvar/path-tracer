@@ -2,5 +2,6 @@
 sdl/2.26.0
 glm/cci.20220420
 lodepng/cci.20200615
+
 [generators]
-cmake
+CMakeDeps
