@@ -10,29 +10,27 @@
 #define WIDTH 1920
 #define HEIGHT 1080
 
-extern std::vector<Sphere> objects;
-
 void render(uint32_t* scene);
-bool find_interception(glm::vec3 ray_point, glm::vec3 ray_normal, glm::vec3& point, glm::vec3& normal, size_t& obj_index);
 
 class ThreadPool {
-	//sync
-	std::mutex mutex;
-	std::condition_variable variable;
-	std::atomic<size_t> flags = 0;
-	bool exit = false;
+  // sync
+  std::mutex mutex;
+  std::condition_variable variable;
+  std::atomic<size_t> flags = 0;
+  bool exit = false;
 
-	size_t threads_counter;
-	std::vector <std::function<void(void)>> tasks;
-	std::vector <std::thread*> threads;
-public:
-	ThreadPool(const std::vector<std::function<void(void)>> &tasks) :
-	tasks(tasks)
-	{
-		threads_counter = tasks.size();
-		for (size_t i = 0; i < tasks.size();  i++) {
-			threads.push_back(new std::thread(std::bind(&ThreadPool::thread_code, this, i)));
-		}
+  size_t threads_counter;
+  std::vector<std::function<void(void)>> tasks;
+  std::vector<std::thread*> threads;
+
+ public:
+  ThreadPool(const std::vector<std::function<void(void)>>& tasks)
+      : tasks(tasks) {
+    threads_counter = tasks.size();
+    for (size_t i = 0; i < tasks.size(); i++) {
+      threads.push_back(
+          new std::thread(std::bind(&ThreadPool::thread_code, this, i)));
+    }
 	}
 	~ThreadPool() {
 		exit = true;

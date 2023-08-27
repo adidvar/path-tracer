@@ -18,4 +18,4 @@ file(GLOB files
 )
 
 add_executable(raytracing ${files})
-target_link_libraries(raytracing glm::glm SDL2::SDL2 lodepng::lodepng)
+target_link_libraries(raytracing glm::glm SDL2::SDL2 SDL2::SDL2main lodepng::lodepng)

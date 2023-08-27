@@ -1,13 +1,11 @@
 #include "nrandom.h"
 
+#include <chrono>
 #include <random>
+#include <thread>
 
-extern std::mt19937 gen;
-
-inline float rvalue()
-{
-    return (float) rand() / RAND_MAX;
-}
+static std::mt19937 gen;
+float rvalue() { return (float)gen() / (float)gen.max(); }
 
 inline float rnvalue()
 {

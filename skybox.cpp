@@ -13,10 +13,10 @@ struct GLight
 };
 
 std::vector<GLight> kglights{
-    {{1, 1, 1}, glm::normalize(glm::vec3{+1, 0.5, -1}), 0.5, 2},
-    {{1, 1, 1}, glm::normalize(glm::vec3{-1, 0, +0.3}), 0.9, 1},
-    {{1, 1, 1}, glm::normalize(glm::vec3{-1, 0, +0.3}), 0.0, 0.1},
-    {{1, 1, 1}, glm::normalize(glm::vec3{1, 0, -0.3}), 0.0, 0.1},
+    {{1, 1, 1}, glm::normalize(glm::vec3{0, 3, 0}), 0.93, 20},
+    //{{1, 1, 1}, glm::normalize(glm::vec3{-1, 0, +0.3}), 0.9, 1},
+    //{{1, 1, 1}, glm::normalize(glm::vec3{-1, 0, +0.3}), 0.0, 0.1},
+    //{{1, 1, 1}, glm::normalize(glm::vec3{1, 0, -0.3}), 0.0, 0.1},
 };
 
 SkyBox::SkyBox()
@@ -34,10 +34,9 @@ SkyBox::SkyBox()
 
 const float pi = 3.14159265f;
 
-glm::vec3 SkyBox::GetColor(glm::vec3 coord)
-{
+glm::vec3 SkyBox::GetColor(glm::vec3 coord) {
     return GetGLight(coord) + GetSkyBox(coord);
-    //return {0, 0, 0};
+    // return {0, 0, 0};
 }
 
 glm::vec3 SkyBox::GetGLight(glm::vec3 coord)
