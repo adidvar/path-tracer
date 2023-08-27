@@ -10,7 +10,8 @@ Material plane_m_g({0.1, 0.7, 0.1}, 0, 0.95, 0.04);
 Material plane_m_b({0.1, 0.1, 0.7}, 0, 0.95, 0.04);
 Material plane_m_k({0.4, 0.4, 0.4}, 0, 0.4, 0);
 
-Material plane_m_w({1, 1, 1}, 1.1, 0.9, 1);
+Material plane_m_wl({1, 1, 1}, 0.9, 0.95, 1);
+Material plane_m_w({1, 1, 1}, 0, 0.95, 1);
 
 Material mm00(color, 0, 1, 0);
 Material mm10(color, 0, 0.8, 0);
@@ -43,12 +44,12 @@ std::vector<Sphere> objects_s{Sphere(glm::vec3{2, 1, 0}, 1, plane_m_w),
                               Sphere(glm::vec3{0, 0, 0}, 1, light2),
                               Sphere(glm::vec3{-2, 0, 0}, 1, light)};
 
-std::vector<Plane> objects_p{Plane({0, 1, 0}, {0, -10, 0}, plane_m_r),
-                             Plane({-1, 0, 0}, {10, 0, 10}, plane_m_g),
-                             Plane({1, 0, 0}, {-10, 0, 0}, plane_m_b),
-                             Plane({0, 0, -1}, {0, 0, 20}, plane_m_k),
-                             Plane({0, 0, 1}, {10, 0, -10}, plane_m_k),
-                             Plane({0, -1, 0}, {0, 10, 0}, plane_m_w)};
+std::vector<Plane> objects_p{Plane({0, 1, 0}, {0, -10, 0}, plane_m_w),
+                             Plane({-1, 0, 0}, {10, 0, 10}, plane_m_r),
+                             Plane({1, 0, 0}, {-10, 0, 0}, plane_m_g),
+                             Plane({0, 0, -1}, {0, 0, 10}, plane_m_w),
+                             Plane({0, 0, 1}, {10, 0, -10}, plane_m_b),
+                             Plane({0, -1, 0}, {0, 10, 0}, plane_m_wl)};
 
 template <typename T>
 bool FindInterceptionForFigure(glm::vec3 ray_point, glm::vec3 ray_direction,

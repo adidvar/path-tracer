@@ -54,7 +54,7 @@ glm::vec3 RayTrace(glm::vec3 ray_point, glm::vec3 ray_normal, size_t depth) {
   if (light_power <= 0) light_power = -light_power;
   auto own_light = m_material.light_power_ * m_material.diffuse_;
 
-  auto specular = m_material.specular_;
+  // auto specular = m_material.specular_;
   auto glossiness = m_material.glossiness_;
   auto diffuse = m_material.diffuse_;
 
@@ -94,11 +94,11 @@ float screen_ratio = (float)WIDTH / HEIGHT;
 
 void task(size_t current, size_t max) {
   RandomInit();
-  glm::vec3 projection_center{0, 0, 0};
+  glm::vec3 projection_center{0, 0, -7};
   for (size_t x = current; x < WIDTH; x += max) {
     for (size_t y = 0; y < HEIGHT; y++) {
       glm::vec3 ray_point{(-2.0 * x / WIDTH + 1) * screen_ratio,
-                          -2.0 * y / HEIGHT + 1, 1};
+                          -2.0 * y / HEIGHT + 1, -6};
       glm::vec3 ray_normal = glm::normalize(ray_point - projection_center);
 
       auto delta = RandomDirection();
@@ -108,7 +108,7 @@ void task(size_t current, size_t max) {
 
       for (size_t i = 0; i < iterations_per_frame; i++) {
         auto color =
-            RayTrace(projection_center, glm::normalize(ray_normal + delta), 4);
+            RayTrace(projection_center, glm::normalize(ray_normal + delta), 8);
         buffer[x][y] += color;
       }
 
