@@ -93,6 +93,7 @@ size_t iterations_per_frame = 5;
 float screen_ratio = (float)WIDTH / HEIGHT;
 
 void task(size_t current, size_t max) {
+  RandomInit();
   glm::vec3 projection_center{0, 0, 0};
   for (size_t x = current; x < WIDTH; x += max) {
     for (size_t y = 0; y < HEIGHT; y++) {
@@ -107,7 +108,7 @@ void task(size_t current, size_t max) {
 
       for (size_t i = 0; i < iterations_per_frame; i++) {
         auto color =
-            RayTrace(projection_center, glm::normalize(ray_normal + delta), 6);
+            RayTrace(projection_center, glm::normalize(ray_normal + delta), 4);
         buffer[x][y] += color;
       }
 

@@ -3,7 +3,8 @@
 
 #include <glm/glm.hpp>
 
-float rvalue();
+void RandomInit();
+float RandomValue();
 glm::vec3 RandomDirection();
 
 #endif
