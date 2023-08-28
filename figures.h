@@ -42,21 +42,15 @@ class Plane {
         m_position(position),
         m_material(mat) {}
 
-  bool InterSect(glm::vec3 ray_point, glm::vec3 ray_normal, glm::vec3& point,
-                 glm::vec3& normal) const {
-    ray_normal = glm::normalize(ray_normal);
+  float InterSect(glm::vec3 ray_point, glm::vec3 ray_direction) const {
+    float p = glm::dot(ray_direction, m_normal);
 
-    float p = glm::dot(ray_normal, m_normal);
-
-    if (p >= 0) return false;
+    if (p >= 0) return -1.0f;
 
     float d = glm::dot(m_position - ray_point, m_normal) / p;
 
-    if (d <= 0) return false;
+    return d;
+  } 
+  glm::vec3 GetSurfaceNormal(glm::vec3 point) const { return m_normal; }
 
-    point = d * ray_normal + ray_point;
-    normal = m_normal;
-
-    return true;
-  }
 };

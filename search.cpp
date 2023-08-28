@@ -3,6 +3,8 @@
 #include "figures.h"
 #include "materials.h"
 
+#include <limits>
+
 glm::vec3 color = {0.76, 0, 0};
 
 Material plane_m_r({0.7, 0.1, 0.1}, 0, 0.95, 0.04);
@@ -10,7 +12,7 @@ Material plane_m_g({0.1, 0.7, 0.1}, 0, 0.95, 0.04);
 Material plane_m_b({0.1, 0.1, 0.7}, 0, 0.95, 0.04);
 Material plane_m_k({0.4, 0.4, 0.4}, 0, 0.4, 0);
 
-Material plane_m_wl({1, 1, 1}, 1.1, 0.95, 1);
+Material plane_m_wl({1, 1, 1}, 1.9, 0.95, 1);
 Material plane_m_w({1, 1, 1}, 0, 0.95, 1);
 
 Material mm00(color, 0, 1, 0);
@@ -51,39 +53,28 @@ std::vector<Plane> objects_p{Plane({0, 1, 0}, {0, -10, 0}, plane_m_w),
                              Plane({0, 0, 1}, {10, 0, -10}, plane_m_b),
                              Plane({0, -1, 0}, {0, 10, 0}, plane_m_wl)};
 
-template <typename T>
+//template <typename T>
 bool FindInterceptionForFigure(glm::vec3 ray_point, glm::vec3 ray_direction,
-                               HitInfo& info, const std::vector<T>& objects) {
-  size_t i = 0;
-  size_t obj_index;
+                               HitInfo& info, const std::vector<Plane>& objects) {
+  size_t obj_index = -1;
+  float value = std::numeric_limits<float>::max();
 
-  glm::vec3 min_point;
-  glm::vec3 min_normal;
-
-  while (i < objects.size() &&
-         !(objects[i].InterSect(ray_point, ray_direction, min_point,
-                                min_normal) == true &&
-           (glm::dot(ray_direction, (min_point - ray_point)) > 0)))
-    i++;
-  obj_index = i;
-
-  if (i == objects.size()) return false;
-
-  for (; i < objects.size(); ++i) {
-    glm::vec3 current_point, current_normal;
-    if (objects[i].InterSect(ray_point, ray_direction, current_point,
-                             current_normal) == true &&
-        (glm::dot(ray_direction, (current_point - ray_point)) > 0)) {
-      if (glm::distance(min_point, ray_point) >
-          glm::distance(current_point, ray_point)) {
-        min_point = current_point;
-        min_normal = current_normal;
-        obj_index = i;
-      }
+  for (size_t i = 0; i < objects.size(); i++) {
+    float r = objects[i].InterSect(ray_point, ray_direction);
+    if (r > 0 && r < value) {
+      value = r;
+      obj_index = i;
     }
   }
-  info = HitInfo(min_point, min_normal, &objects[obj_index].m_material);
-  return true;
+
+  if (obj_index == (size_t)-1)
+    return false;
+  else {
+    glm::vec3 point = ray_point + ray_direction * value;
+    info = HitInfo(point, objects[obj_index].GetSurfaceNormal(point), &objects[obj_index].m_material);
+    return true;
+  }
+
 }
 
 bool FindInterception(glm::vec3 ray_point, glm::vec3 ray_direction,

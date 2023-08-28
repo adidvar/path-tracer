@@ -30,7 +30,7 @@ glm::vec3 RayTrace(glm::vec3 ray_point, glm::vec3 ray_normal) {
   glm::vec3 color = {1, 1, 1};
   HitInfo info;
 
-  for (size_t i = 0; i < 8; i++) {
+  for (size_t i = 0; i < 3; i++) {
     bool intersect = FindInterception(ray_point, ray_normal, info);
 
     if (intersect == false) {
@@ -64,6 +64,7 @@ float screen_ratio = (float)WIDTH / HEIGHT;
 
 void task(size_t current, size_t max) {
   RandomInit();
+
   glm::vec3 projection_center{0, 0, -7};
   for (size_t x = current; x < WIDTH; x += max) {
     for (size_t y = 0; y < HEIGHT; y++) {
