@@ -1,0 +1,13 @@
+--- Registers ---
+  float value = std::numeric_limits<float>::max();
+""     float value = std::numeric_limits<float>::max();<CR>
+"0   (-b - discriminant) / 2 * a
+"1     float value = std::numeric_limits<float>::max();<CR>
+"2   
+"3   
+"4   
+"5   
+"6   
+"7   
+"8   
+"9   

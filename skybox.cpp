@@ -13,7 +13,7 @@ struct GLight
 };
 
 std::vector<GLight> kglights{
-    //{{1, 1, 1}, glm::normalize(glm::vec3{0, 3, 0}), 0.93, 20},
+    {{1, 1, 1}, glm::normalize(glm::vec3{0, 3, 0}), 0.93, 3},
     //{{1, 1, 1}, glm::normalize(glm::vec3{-1, 0, +0.3}), 0.9, 1},
     //{{1, 1, 1}, glm::normalize(glm::vec3{-1, 0, +0.3}), 0.0, 0.1},
     //{{1, 1, 1}, glm::normalize(glm::vec3{1, 0, -0.3}), 0.0, 0.1},

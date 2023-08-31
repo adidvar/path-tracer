@@ -2,6 +2,17 @@
 #include <glm/glm.hpp>
 #include "materials.h"
 
+/*
+ *  x^2 + y^2 = r^2
+ * x =
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
 class Sphere {
  public:
   glm::vec3 m_position;
@@ -11,23 +22,22 @@ class Sphere {
   Sphere(glm::vec3 pos, float radius, Material& mat)
       : m_position(pos), m_radius(radius), m_material(mat) {}
 
-  bool InterSect(glm::vec3 ray_point, glm::vec3 ray_normal, glm::vec3& point,
-                 glm::vec3& normal) const {
-    ray_normal = glm::normalize(ray_normal);
+  float InterSect(glm::vec3 ray_point, glm::vec3 ray_direction) const {
+    glm::vec3 oc = ray_point - m_position;
+    float a = dot(ray_direction, ray_direction);
+    float b = 2.0 * dot(oc, ray_direction);
+    float c = dot(oc, oc) - m_radius * m_radius;
+    float discriminant = b * b - 4 * a * c;
+    float t1 = (-b - discriminant) / 2 * a, t2 = (-b - discriminant) / 2 * a;
 
-    glm::vec3 to_center = m_position - ray_point;
-    glm::vec3 center_to_ray =
-        (glm::dot(to_center, ray_normal) * ray_normal) - to_center;
+    if (discriminant < 0)
+      return -1.0;
+    else
+      return (-b - sqrt(discriminant)) / (2.0 * a);
+  }
 
-    if (glm::dot(center_to_ray, center_to_ray) < m_radius * m_radius) {
-      float delta_len =
-          sqrt(m_radius * m_radius - glm::dot(center_to_ray, center_to_ray));
-      glm::vec3 normal_direction = center_to_ray - delta_len * ray_normal;
-      point = m_position + normal_direction;
-      normal = glm::normalize(normal_direction);
-      return true;
-    } else
-      return false;
+  glm::vec3 GetSurfaceNormal(glm::vec3 point) const {
+    return glm::normalize(point - m_position);
   }
 };
 

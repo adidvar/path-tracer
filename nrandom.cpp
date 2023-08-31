@@ -50,8 +50,7 @@ inline float rnvalue_hashed() {
   return hashed[index];
 }
 
-
-glm::vec3 RandomDirection()
-{
-    return {rnvalue_hashed(), rnvalue_hashed(), rnvalue_hashed()};
+glm::vec3 RandomDirection() {
+  return {rnvalue(), rnvalue(), rnvalue()};
+  // return {rnvalue_hashed(), rnvalue_hashed(), rnvalue_hashed()};
 }

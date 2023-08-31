@@ -36,15 +36,7 @@ Material light({0.5, 0.1, 0.1}, 0, 0.3, 0.02);
 Material light1({0.1, 0.1, 0.1}, 0, 0.3, 0.02);
 Material light2({0.05, 0.05, 0.1}, 0, 0.3, 0.02);
 
-std::vector<Sphere> objects_s{Sphere(glm::vec3{2, 1, 0}, 1, plane_m_w),
-                              Sphere(glm::vec3{0, 1, 0}, 1, light),
-                              Sphere(glm::vec3{-2, 1, 0}, 1, light2),
-                              Sphere(glm::vec3{2, -1, 0}, 1, light1),
-                              Sphere(glm::vec3{2, -1, 0}, 1, light2),
-                              Sphere(glm::vec3{0, -1, 0}, 1, light),
-                              Sphere(glm::vec3{-2, 0, 0}, 1, light),
-                              Sphere(glm::vec3{0, 0, 0}, 1, light2),
-                              Sphere(glm::vec3{-2, 0, 0}, 1, light)};
+std::vector<Sphere> objects_s{Sphere(glm::vec3{0, 0, 4}, 6, plane_m_w)};
 
 std::vector<Plane> objects_p{Plane({0, 1, 0}, {0, -10, 0}, plane_m_w),
                              Plane({-1, 0, 0}, {10, 0, 10}, plane_m_r),
@@ -53,11 +45,11 @@ std::vector<Plane> objects_p{Plane({0, 1, 0}, {0, -10, 0}, plane_m_w),
                              Plane({0, 0, 1}, {10, 0, -10}, plane_m_b),
                              Plane({0, -1, 0}, {0, 10, 0}, plane_m_wl)};
 
-//template <typename T>
+template <typename T>
 bool FindInterceptionForFigure(glm::vec3 ray_point, glm::vec3 ray_direction,
-                               HitInfo& info, const std::vector<Plane>& objects) {
+                               HitInfo& info, float value,
+                               const std::vector<T>& objects) {
   size_t obj_index = -1;
-  float value = std::numeric_limits<float>::max();
 
   for (size_t i = 0; i < objects.size(); i++) {
     float r = objects[i].InterSect(ray_point, ray_direction);
@@ -74,10 +66,15 @@ bool FindInterceptionForFigure(glm::vec3 ray_point, glm::vec3 ray_direction,
     info = HitInfo(point, objects[obj_index].GetSurfaceNormal(point), &objects[obj_index].m_material);
     return true;
   }
-
 }
 
 bool FindInterception(glm::vec3 ray_point, glm::vec3 ray_direction,
                       HitInfo& info) {
-  return FindInterceptionForFigure(ray_point, ray_direction, info, objects_p);
+  float value = std::numeric_limits<float>::max();
+  bool intersects = FindInterceptionForFigure(ray_point, ray_direction, info,
+                                              value, objects_p);
+  intersects = std::max(FindInterceptionForFigure(ray_point, ray_direction,
+                                                  info, value, objects_s),
+                        intersects);
+  return intersects;
 }
