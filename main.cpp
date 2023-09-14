@@ -1,8 +1,10 @@
-#include <stdio.h> /* printf and fprintf */
-#include <iostream>
-#include "render.h"
-
 #include <SDL2/SDL.h>
+#include <stdio.h> /* printf and fprintf */
+
+#include <iostream>
+
+#include "camera.h"
+#include "render.h"
 
 // int main() {
 int SDL_main(int argc, char* argv[]) {

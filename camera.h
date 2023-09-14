@@ -16,9 +16,9 @@ class Camera {
   bool enable_depth_ = false;
   float focus_distance_ = 10;
 
-  glm::vec3 point_ = {};
-  glm::vec3 direction_;
-  const glm::vec3 vertical_direction_;
+  glm::vec3 point_ = {0, 0, 0};
+  glm::vec3 direction_ = {0, 0, 1};
+  const glm::vec3 vertical_direction_ = {0, 1, 0};
 };
 
 extern const Camera camera;
