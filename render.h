@@ -7,8 +7,8 @@
 #include <mutex>
 #include <condition_variable>
 
-#define WIDTH 1920
-#define HEIGHT 1080
+#define WIDTH 600
+#define HEIGHT 600
 
 void render(uint32_t* scene);
 

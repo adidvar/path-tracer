@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "bsdf.h"
+#include "camera.h"
 #include "nrandom.h"
 #include "search.h"
 #include "skybox.h"
@@ -30,7 +31,7 @@ glm::vec3 RayTrace(glm::vec3 ray_point, glm::vec3 ray_normal) {
   glm::vec3 color = {1, 1, 1};
   HitInfo info;
 
-  for (size_t i = 0; i < 3; i++) {
+  for (size_t i = 0; i < 5; i++) {
     bool intersect = FindInterception(ray_point, ray_normal, info);
 
     if (intersect == false) {
@@ -65,12 +66,13 @@ float screen_ratio = (float)WIDTH / HEIGHT;
 void task(size_t current, size_t max) {
   RandomInit();
 
-  glm::vec3 projection_center{0, 0, -7};
   for (size_t x = current; x < WIDTH; x += max) {
     for (size_t y = 0; y < HEIGHT; y++) {
-      glm::vec3 ray_point{(-2.0 * x / WIDTH + 1) * screen_ratio,
-                          -2.0 * y / HEIGHT + 1, -6};
-      glm::vec3 ray_normal = glm::normalize(ray_point - projection_center);
+      glm::vec2 screen_point{(-2.0 * x / WIDTH + 1) * screen_ratio,
+                             -2.0 * y / HEIGHT + 1};
+
+      auto [point, direction] =
+          camera.GetRayFromCamera(screen_point.x, screen_point.y);
 
       auto delta = RandomDirection();
       delta /= 4000;
@@ -78,8 +80,7 @@ void task(size_t current, size_t max) {
       buffer[x][y] *= iteration;
 
       for (size_t i = 0; i < iterations_per_frame; i++) {
-        auto color =
-            RayTrace(projection_center, glm::normalize(ray_normal + delta));
+        auto color = RayTrace(point, glm::normalize(direction + delta));
         buffer[x][y] += color;
       }
 

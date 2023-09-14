@@ -17,7 +17,8 @@ std::pair<glm::vec3, glm::vec3> Camera::GetRayFromCamera(float x,
 
   glm::vec3 matrix_point = x * horizonatal_step + y * vertical_step;
 
-  direction = glm::normalize(matrix_point + direction_ * tanf(fov_ / 2.0));
+  direction = glm::normalize(matrix_point +
+                             direction_ / tanf((fov_ / 180.0f * 3.14f) / 2.0));
 
   return {point, direction};
 }

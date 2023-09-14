@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-#include "camera.h"
 #include "render.h"
 
 // int main() {
@@ -14,7 +13,7 @@ int SDL_main(int argc, char* argv[]) {
     return 1;
   }
   window =
-      SDL_CreateWindow("SDL Example",           /* Title of the SDL window */
+      SDL_CreateWindow("Path tracing",          /* Title of the SDL window */
                        SDL_WINDOWPOS_UNDEFINED, /* Position x of the window */
                        SDL_WINDOWPOS_UNDEFINED, /* Position y of the window */
                        WIDTH,  /* Width of the window in pixels */
@@ -30,17 +29,6 @@ int SDL_main(int argc, char* argv[]) {
     std::cout << "SDL2 Error: " << SDL_GetError() << "\n";
     return -1;
   }
-
-  /*
-      glm::mat4 trans = glm::rotate(0.78f, glm::vec3(0, 0, 1));
-      trans = glm::rotate(trans,-0.9f, glm::vec3(1, 0, 0));
-
-      for (auto &sphere : objects) {
-              glm::vec4 ful_vec = glm::vec4(sphere.m_position, 1);
-              glm::vec4 ful_trans = ful_vec*trans;
-              sphere.m_position = { ful_trans.x,ful_trans.y,ful_trans.z };
-      }
-*/
 
   bool keep_window_open = true;
   while (keep_window_open) {
