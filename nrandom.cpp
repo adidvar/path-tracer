@@ -51,6 +51,7 @@ inline float rnvalue_hashed() {
 }
 
 glm::vec3 RandomDirection() {
-  // return {rnvalue(), rnvalue(), rnvalue()};
-  return {rnvalue_hashed(), rnvalue_hashed(), rnvalue_hashed()};
+  return glm::normalize(glm::vec3{rnvalue(), rnvalue(), rnvalue()});
+  // return glm::normalize(
+  //     glm::vec3{rnvalue_hashed(), rnvalue_hashed(), rnvalue_hashed()});
 }

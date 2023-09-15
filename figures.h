@@ -1,17 +1,9 @@
-#pragma once
-#include <glm/glm.hpp>
-#include "materials.h"
+#ifndef FIGURES_H
+#define FIGURES_H
 
-/*
- *  x^2 + y^2 = r^2
- * x =
- *
- *
- *
- *
- *
- *
- */
+#include <glm/glm.hpp>
+
+#include "materials.h"
 
 class Sphere {
  public:
@@ -64,3 +56,5 @@ class Plane {
   glm::vec3 GetSurfaceNormal(glm::vec3 point) const { return m_normal; }
 
 };
+
+#endif

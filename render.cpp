@@ -11,13 +11,14 @@
 #include "nrandom.h"
 #include "search.h"
 #include "skybox.h"
+#include "threadpool.h"
 
-glm::vec3 normal_color(glm::vec3 color) {
+glm::vec3 clamp_color(glm::vec3 color) {
   return glm::clamp(color, glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
 }
 
-uint32_t vectocolor(glm::vec3 color) {
-  color = normal_color(color);
+uint32_t process_and_convert_color(glm::vec3 color) {
+  color = clamp_color(color);
   uint8_t r = 255 * color.x;
   uint8_t g = 255 * color.y;
   uint8_t b = 255 * color.z;
@@ -58,12 +59,11 @@ glm::vec3 RayTrace(glm::vec3 ray_point, glm::vec3 ray_normal) {
 
 glm::vec3 buffer[WIDTH][HEIGHT] = {};
 size_t iteration = 1;
-
-size_t iterations_per_frame = 5;
+size_t cycles_peer_pixel = 5;
 
 float screen_ratio = (float)WIDTH / HEIGHT;
 
-void task(size_t current, size_t max) {
+void task(int current, int max) {
   RandomInit();
 
   for (size_t x = current; x < WIDTH; x += max) {
@@ -74,38 +74,28 @@ void task(size_t current, size_t max) {
       auto [point, direction] =
           camera.GetRayFromCamera(screen_point.x, screen_point.y);
 
-      auto delta = RandomDirection();
-      delta /= 4000;
-
-      buffer[x][y] *= iteration;
-
-      for (size_t i = 0; i < iterations_per_frame; i++) {
-        auto color = RayTrace(point, glm::normalize(direction + delta));
+      for (size_t i = 0; i < cycles_peer_pixel; ++i) {
+        auto color = RayTrace(point, direction);
         buffer[x][y] += color;
       }
-
-      buffer[x][y] /= (iteration + iterations_per_frame);
     }
   }
 }
 
-std::vector<std::function<void(void)>> tasks{
-    std::bind(&task, 0, 5), std::bind(&task, 1, 5), std::bind(&task, 2, 5),
-    std::bind(&task, 3, 5), std::bind(&task, 4, 5)};
-
-ThreadPool pool(tasks);
+ThreadPool pool(&task);
 
 void render(uint32_t* scene) {
   auto begin = std::chrono::high_resolution_clock::now();
 
   pool.Run();
+  iteration += cycles_peer_pixel;
 
   for (size_t x = 0; x < WIDTH; x++) {
     for (size_t y = 0; y < HEIGHT; y++) {
-      scene[WIDTH * y + x] = vectocolor(buffer[x][y]);
+      scene[WIDTH * y + x] =
+          process_and_convert_color(buffer[x][y] / float(iteration));
     }
   }
-  iteration += iterations_per_frame;
 
   auto end = std::chrono::high_resolution_clock::now();
   std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end -

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATERIALS_H
+#define MATERIALS_H
+
 #include <glm/glm.hpp>
 #include <random>
 
@@ -16,3 +18,5 @@ struct Material {
   float glossiness_;
   float specular_;
 };
+
+#endif
