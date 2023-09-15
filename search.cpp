@@ -37,11 +37,11 @@ Material light1({0.1, 0.1, 0.1}, 0, 0.3, 0.02);
 Material light2({0.05, 0.05, 0.1}, 0, 0.3, 0.02);
 
 std::vector<Sphere> objects_s{
-    Sphere(glm::vec3{-6, -6, 6}, 4, plane_m_w),
-    Sphere(glm::vec3{-6, -1, 6}, 1, plane_m_w),
-    Sphere(glm::vec3{-3, 4, 3}, 2, plane_m_w),
+    Sphere(glm::vec3{-6, -6, 2}, 4, plane_m_w),
+    Sphere(glm::vec3{-6, -1, 2}, 1, plane_m_w),
+    Sphere(glm::vec3{0, -3, 5.5}, 3, plane_m_w),
     Sphere(glm::vec3{6, -6, 6}, 4, plane_m_w),
-    Sphere(glm::vec3{0, -2, 0}, 2, plane_m_w),
+    Sphere(glm::vec3{0, 0, 3}, 1, plane_m_w),
 };
 
 std::vector<Plane> objects_p{Plane({0, 1, 0}, {0, -10, 0}, plane_m_w),

@@ -11,10 +11,10 @@ class Camera {
   std::pair<glm::vec3, glm::vec3> GetRayFromCamera(float x, float y) const;
 
  private:
-  unsigned int fov_ = 120;
+  unsigned int fov_ = 90;
 
-  float focus_distance_ = 18;
-  float blue_power = 0.5;
+  float focus_distance_ = 11.5;
+  float blue_power = 0.8;
 
   glm::vec3 point_ = {0, -2, -9};
   glm::vec3 direction_ = {0, 0, 1};

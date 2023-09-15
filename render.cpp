@@ -32,7 +32,7 @@ glm::vec3 RayTrace(glm::vec3 ray_point, glm::vec3 ray_normal) {
   glm::vec3 color = {1, 1, 1};
   HitInfo info;
 
-  for (size_t i = 0; i < 5; i++) {
+  for (size_t i = 0; i < 10; i++) {
     bool intersect = FindInterception(ray_point, ray_normal, info);
 
     if (intersect == false) {

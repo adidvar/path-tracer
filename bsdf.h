@@ -21,10 +21,11 @@ glm::vec3 bsdf(glm::vec3 from, glm::vec3 &to, glm::vec3 normal,
   // bool is_specular = (rvalue() < ra);
 
   to = diffuse_v;
-  // if (is_specular)
-  //   new_ray = reflected_v;
-  // else
-  // new_ray = glm::normalize(glm::mix(reflected_v, diffuse_v, glossiness));
+  // to = diffuse_v;
+  //  if (is_specular)
+  //    new_ray = reflected_v;
+  //  else
+  //  new_ray = glm::normalize(glm::mix(reflected_v, diffuse_v, glossiness));
 
   // if (is_specular)
   //   color = light;
