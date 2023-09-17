@@ -17,7 +17,7 @@ class Sphere {
   float InterSect(glm::vec3 ray_point, glm::vec3 ray_direction) const {
     glm::vec3 oc = ray_point - m_position;
     float a = dot(ray_direction, ray_direction);
-    float b = 2.0 * dot(oc, ray_direction);
+    float b = 2.0f * dot(oc, ray_direction);
     float c = dot(oc, oc) - m_radius * m_radius;
     float discriminant = b * b - 4 * a * c;
     float t1 = (-b - discriminant) / 2 * a, t2 = (-b - discriminant) / 2 * a;
@@ -25,7 +25,7 @@ class Sphere {
     if (discriminant < 0)
       return -1.0;
     else
-      return (-b - sqrt(discriminant)) / (2.0 * a);
+      return (-b - sqrt(discriminant)) / (2.0f * a);
   }
 
   glm::vec3 GetSurfaceNormal(glm::vec3 point) const {

@@ -19,9 +19,9 @@ glm::vec3 clamp_color(glm::vec3 color) {
 
 uint32_t process_and_convert_color(glm::vec3 color) {
   color = clamp_color(color);
-  uint8_t r = 255 * color.x;
-  uint8_t g = 255 * color.y;
-  uint8_t b = 255 * color.z;
+  uint8_t r = 255.0f * color.x;
+  uint8_t g = 255.0f * color.y;
+  uint8_t b = 255.0f * color.z;
   return ((uint32_t)r << 16 | (uint32_t)g << 8 | (uint32_t)b << 0);
 }
 
