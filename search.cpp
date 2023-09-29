@@ -12,7 +12,8 @@ Material plane_m_g({0.1, 0.7, 0.1}, 0, 0.95, 0.04);
 Material plane_m_b({0.1, 0.1, 0.7}, 0, 0.95, 0.04);
 Material plane_m_k({0.4, 0.4, 0.4}, 0, 0.4, 0);
 
-Material plane_m_wl({1, 1, 1}, 1.9, 0.95, 1);
+Material plane_m_wl({1, 1, 1}, 1.7, 0.95, 1);
+Material plane_m_rl({0.3, 0.8, 1}, 2.3, 0.95, 1);
 Material plane_m_w({1, 1, 1}, 0, 0.95, 1);
 
 Material mm00(color, 0, 1, 0);
@@ -42,6 +43,7 @@ std::vector<Sphere> objects_s{
     Sphere(glm::vec3{0, -3, 5.5}, 3, plane_m_w),
     Sphere(glm::vec3{6, -6, 6}, 4, plane_m_w),
     Sphere(glm::vec3{0, 0, 3}, 1, plane_m_w),
+    // Sphere(glm::vec3{0, -9, 3}, 0.6, plane_m_rl),
 };
 
 std::vector<Plane> objects_p{Plane({0, 1, 0}, {0, -10, 0}, plane_m_w),

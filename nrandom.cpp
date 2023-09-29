@@ -15,8 +15,9 @@ uint64_t next()
     return z ^ (z >> 31);
 }
 
-float RandomValue() { return (float)next() / (float)std::numeric_limits<uint64_t>::max(); };
-
+float RandomValue() {
+    return (float)next() / (float)std::numeric_limits<uint64_t>::max();
+};
 
 /*
 void RandomInit() {
@@ -28,9 +29,9 @@ void RandomInit() {
 */
 
 inline float rnvalue() {
-  float theta = 2.0f * 3.1415926f * RandomValue();
-  float rho = sqrt(-2.0f * log(RandomValue()));
-  return rho * cos(theta);
+    float theta = 2.0f * 3.1415926f * RandomValue();
+    float rho = std::sqrt(-2.0f * std::log(RandomValue()));
+    return rho * std::cos(theta);
 }
 
 const size_t size = 2048;

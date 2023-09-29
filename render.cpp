@@ -43,7 +43,10 @@ glm::vec3 RayTrace(glm::vec3 ray_point, glm::vec3 ray_normal) {
     const Material& m_material = *info.GetMaterial();
 
     auto light_power = m_material.light_power_;
-    // if (light_power <= 0) light_power = -light_power;
+    if (glm::length(light_power) > 0) {
+      light += color * light_power;
+      return light;
+    }
 
     glm::vec3 to;
     auto bsdf_result = bsdf(ray_normal, to, info.GetNormal(), m_material);
