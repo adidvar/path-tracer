@@ -16,14 +16,14 @@ class Sphere {
 
   float InterSect(glm::vec3 ray_point, glm::vec3 ray_direction) const {
     glm::vec3 oc = ray_point - m_position;
-    float a = dot(ray_direction, ray_direction);
-    float b = 2.0f * dot(oc, ray_direction);
-    float c = dot(oc, oc) - m_radius * m_radius;
+    float a = glm::dot(ray_direction, ray_direction);
+    float b = 2.0f * glm::dot(oc, ray_direction);
+    float c = glm::dot(oc, oc) - m_radius * m_radius;
     float discriminant = b * b - 4 * a * c;
-    float t1 = (-b - discriminant) / 2 * a, t2 = (-b - discriminant) / 2 * a;
+    // float t1 = (-b - discriminant) / 2 * a, t2 = (-b - discriminant) / 2 * a;
 
     if (discriminant < 0)
-      return -1.0;
+      return -1.0f;
     else
       return (-b - sqrt(discriminant)) / (2.0f * a);
   }

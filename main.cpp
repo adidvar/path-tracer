@@ -30,6 +30,12 @@ int SDL_main(int argc, char* argv[]) {
     return -1;
   }
 
+  SDL_LockSurface(window_surface);
+
+  render(static_cast<uint32_t*>(window_surface->pixels));
+  /* Unlock the surface */
+  SDL_UnlockSurface(window_surface);
+
   bool keep_window_open = true;
   while (keep_window_open) {
     SDL_Event e;
@@ -40,12 +46,6 @@ int SDL_main(int argc, char* argv[]) {
           break;
       }
     }
-    SDL_LockSurface(window_surface);
-
-    render(static_cast<uint32_t*>(window_surface->pixels));
-    /* Unlock the surface */
-    SDL_UnlockSurface(window_surface);
-
     SDL_UpdateWindowSurface(window);
   }
 

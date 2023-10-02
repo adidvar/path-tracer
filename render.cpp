@@ -61,8 +61,8 @@ glm::vec3 RayTrace(glm::vec3 ray_point, glm::vec3 ray_normal) {
 }
 
 glm::vec3 buffer[WIDTH][HEIGHT] = {};
-size_t iteration = 1;
-size_t cycles_peer_pixel = 5;
+size_t iteration = 0;
+size_t cycles_peer_pixel = 100;
 
 float screen_ratio = (float)WIDTH / HEIGHT;
 
