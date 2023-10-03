@@ -1,70 +1,72 @@
 #include "nrandom.h"
 
-#include <chrono>
-#include <random>
-#include <thread>
+#include <glm/glm.hpp>
 
-static thread_local uint64_t x{}; /* The state can be seeded with any value. */
-uint32_t next() {
-  uint64_t z = (x += UINT64_C(0x9E3779B97F4A7C15));
-  z = (z ^ (z >> 30)) * UINT64_C(0xBF58476D1CE4E5B9);
-  z = (z ^ (z >> 27)) * UINT64_C(0x94D049BB133111EB);
-  return z ^ (z >> 31);
+static thread_local uint32_t state_;
+
+static uint32_t pcg_hash(uint32_t input) {
+  uint32_t state = input * 747796405u + 2891336453u;
+  uint32_t word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
+  return (word >> 22u) ^ word;
 }
 
-#include <emmintrin.h>
-#include <immintrin.h>
-#include <pmmintrin.h>
-#include <smmintrin.h>
+float RandomValue() {
+  state_ = pcg_hash(state_);
+  return (float)state_ / (float)std::numeric_limits<uint32_t>::max();
+};
 
-class MyGen {
- public:
-  using result_type = uint32_t;
+inline float fast_log2 (float val) {
+   int * const  exp_ptr = reinterpret_cast <int *> (&val);
+   int          x = *exp_ptr;
+   const int    log_2 = ((x >> 23) & 255) - 128;
+   x &= ~(255 << 23);
+   x += 127 << 23;
+   *exp_ptr = x;
 
-  result_type max() const { return std::numeric_limits<result_type>::max(); };
-  result_type min() const { return std::numeric_limits<result_type>::min(); };
-  result_type operator()() const { return next(); };
-} mygen;
+   return (val + log_2);
+}
 
-float uni_real_dist() { return (float)mygen() / mygen.max(); }
+inline float fast_log (const float &val) {
+   return (fast_log2 (val) * 0.69314718f);
+}
 
-std::normal_distribution<float> distribution;
+inline float fast_sine(float x) {
+    constexpr float PI = 3.14159265358f;
+    constexpr float B = 4.0f / PI;
+    constexpr float C = -4.0f / (PI * PI);
+    constexpr float P = 0.225f;
+
+    float y = B * x + C * x * (x < 0 ? -x : x);
+    return P * (y * (y < 0 ? -y : y) - y) + y;
+}
+
+// x range: [-PI, PI]
+inline float fast_cosine(float x) {
+    constexpr float PI = 3.14159265358f;
+    constexpr float B = 4.0f / PI;
+    constexpr float C = -4.0f / (PI * PI);
+    constexpr float P = 0.225f;
+
+    x = (x > 0) ? -x : x;
+    x += PI/2;
+
+    return fast_sine(x);
+}
+
+static float rnvalue() {
+  float theta = 2.0f * 3.1415926f * RandomValue();
+  float rho = std::sqrt(-2.0f * fast_log(RandomValue()));
+  return rho * fast_cosine(theta);
+}
 
 glm::vec3 RandomDirection() {
-  const thread_local auto cvect = _mm_set_ps1(2.0f * 3.1415926f);
-  const thread_local auto vvect = _mm_set_ps1(-2.0);
+  float a[3] = {rnvalue(), rnvalue(), rnvalue()};
+  float ilen = 1 / std::sqrt( a[0]*a[0] + a[1]*a[1] + a[2]*a[2] );
+  a[0] *= ilen;
+  a[1] *= ilen;
+  a[2] *= ilen;
 
-  auto first = _mm_setr_ps(uni_real_dist(), uni_real_dist(),
-                           uni_real_dist(), 0.0f);
-  auto r1 = _mm_mul_ps(first, cvect);
-
-  alignas(16) float vect[4];
-  _mm_store_ps(vect, r1);
-  vect[0] = std::cos(vect[0]);
-  vect[1] = std::cos(vect[1]);
-  vect[2] = std::cos(vect[2]);
-  r1 = _mm_load_ps(vect);
-
-  auto second =
-      _mm_setr_ps(log(uni_real_dist()), log(uni_real_dist()),
-                  log(uni_real_dist()), 0);
-  auto mulled = _mm_mul_ps(second, vvect);
-  auto r2 = _mm_sqrt_ps(mulled);
-
-  auto result = _mm_mul_ps(r1, r2);
-
-  auto dp = _mm_dp_ps(result, result, 0x7F);
-
-  dp = _mm_rsqrt_ps(dp);
-
-  result = _mm_mul_ps(result, dp);
-
-  alignas(16) float res[4];
-  _mm_store_ps(res, result);
-
-  return {res[0], res[1], res[2]};
+    return glm::vec3{a[0],a[1], a[2]};
 }
 
-float RandomValue() { return distribution(mygen); }
-
-void RandomInit() { x = rand(); }
+void RandomInit() {}
