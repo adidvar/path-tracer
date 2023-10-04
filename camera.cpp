@@ -15,8 +15,8 @@ std::pair<glm::vec3, glm::vec3> Camera::GetRayFromCamera(float x,
       glm::normalize(glm::cross(vertical_step, direction_));
 
   glm::vec3 start_point =
-      point_ + blue_power * (vertical_step * RandomValue() +
-                             horizonatal_step * RandomValue());
+      point_ + blue_power * (vertical_step * RandomNormalValue() +
+                             horizonatal_step * RandomNormalValue());
 
   glm::vec3 matrix_point = x * horizonatal_step + y * vertical_step;
 

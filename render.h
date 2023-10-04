@@ -8,7 +8,7 @@
 #include "figures.h"
 #include "materials.h"
 
-#define WIDTH 600
-#define HEIGHT 600
+#define WIDTH 1280
+#define HEIGHT 720
 
 void render(uint32_t* scene);

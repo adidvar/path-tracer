@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include <random>
+
 static thread_local uint32_t state_;
 
 static uint32_t pcg_hash(uint32_t input) {
@@ -53,20 +55,17 @@ inline float fast_cosine(float x) {
     return fast_sine(x);
 }
 
-static float rnvalue() {
+float RandomNormalValue() {
   float theta = 2.0f * 3.1415926f * RandomValue();
   float rho = std::sqrt(-2.0f * fast_log(RandomValue()));
   return rho * fast_cosine(theta);
 }
 
 glm::vec3 RandomDirection() {
-  float a[3] = {rnvalue(), rnvalue(), rnvalue()};
-  float ilen = 1 / std::sqrt( a[0]*a[0] + a[1]*a[1] + a[2]*a[2] );
-  a[0] *= ilen;
-  a[1] *= ilen;
-  a[2] *= ilen;
-
-    return glm::vec3{a[0],a[1], a[2]};
+    return glm::normalize(glm::vec3{RandomNormalValue(),RandomNormalValue(), RandomNormalValue()});
 }
 
-void RandomInit() {}
+void RandomInit() { 
+  std::random_device device;
+  state_ = device();
+}

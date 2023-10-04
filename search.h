@@ -8,4 +8,6 @@
 bool FindInterception(glm::vec3 ray_point, glm::vec3 ray_direction,
                       HitInfo &info);
 
+void GenerateScene();
+
 #endif

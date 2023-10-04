@@ -93,10 +93,25 @@ void render(uint32_t* scene) {
   pool.Run();
   iteration += cycles_peer_pixel;
 
-  for (size_t x = 0; x < WIDTH; x++) {
-    for (size_t y = 0; y < HEIGHT; y++) {
+  for (int x = 1; x < WIDTH-1; x++) {
+    for (int y = 1; y < HEIGHT-1; y++) {
+
+      //convolution
+
+      glm::vec3 sum = buffer[x][y] * (1.0f);
+
+      /*
+      for (int dx = -1; dx <= 1; dx++)
+        for (int dy = -1; dy <= 1; dy++) 
+          if ( ! (x==0 && y==0))
+          sum += buffer[x + dx][y + dy] * (1.0f/16);
+          */
+
+
+
+
       scene[WIDTH * y + x] =
-          process_and_convert_color(buffer[x][y] / float(iteration));
+          process_and_convert_color(sum / float(iteration));
     }
   }
 

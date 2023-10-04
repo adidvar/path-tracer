@@ -1,6 +1,7 @@
 #include "search.h"
 
 #include "figures.h"
+#include "nrandom.h"
 #include "materials.h"
 
 #include <limits>
@@ -37,6 +38,7 @@ Material light({0.5, 0.1, 0.1}, 0, 0.3, 0.02);
 Material light1({0.1, 0.1, 0.1}, 0, 0.3, 0.02);
 Material light2({0.05, 0.05, 0.1}, 0, 0.3, 0.02);
 
+/*
 std::vector<Sphere> objects_s{
     Sphere(glm::vec3{-6, -6, 2}, 4, plane_m_w),
     Sphere(glm::vec3{-6, -1, 2}, 1, plane_m_w),
@@ -52,6 +54,27 @@ std::vector<Plane> objects_p{Plane({0, 1, 0}, {0, -10, 0}, plane_m_w),
                              Plane({0, 0, -1}, {0, 0, 10}, plane_m_w),
                              Plane({0, 0, 1}, {10, 0, -10}, plane_m_b),
                              Plane({0, -1, 0}, {0, 10, 0}, plane_m_wl)};
+                             */
+
+std::vector<Sphere> objects_s;
+
+std::vector<Plane> objects_p{Plane({0, 1, 0}, {0, -10, 0}, plane_m_w)};
+
+void GenerateScene() {
+  for (size_t i = 0; i < 20; i++) {
+    Material* material = nullptr;
+
+    if (i % 4 == 0) material = &plane_m_r;
+    if (i % 4 == 1) material = &plane_m_g;
+    if (i % 4 == 2) material = &plane_m_b;
+    if (i % 4 == 3) material = &plane_m_k;
+
+    objects_s.push_back(Sphere(
+        {RandomNormalValue() * 20, -4, 4 + abs(RandomNormalValue() * 10)}, 6,
+        *material));
+  }
+}
+
 
 template <typename T>
 bool FindInterceptionForFigure(glm::vec3 ray_point, glm::vec3 ray_direction,
