@@ -13,8 +13,8 @@ find_package(glm REQUIRED)
 find_package(lodepng REQUIRED)
 
 file(GLOB files
-     "*.h"
-     "*.cpp"
+     "src/*.h"
+     "src/*.cpp"
 )
 
 add_executable(raytracing ${files})

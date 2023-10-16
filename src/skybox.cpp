@@ -22,14 +22,17 @@ std::vector<GLight> kglights{
 SkyBox::SkyBox()
 {
     std::vector<unsigned char> buffer;
-    lodepng::load_file(buffer, "skybox.png"); //load the image file with given filename
-    unsigned error = lodepng::decode(image_buffer_, width_, height_, buffer); //decode the png
+    /*
+    //lodepng::load_file(buffer, "skybox.png"); //load the image file with given
+    filename unsigned error = lodepng::decode(image_buffer_, width_, height_,
+    buffer); //decode the png
 
     //stop if there is an error
     if (error) {
-        std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
-        exit(0);
+        std::cout << "decoder error " << error << ": " <<
+    lodepng_error_text(error) << std::endl; exit(0);
     }
+*/
 }
 
 const float pi = 3.14159265f;
