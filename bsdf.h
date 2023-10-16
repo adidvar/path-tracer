@@ -12,15 +12,15 @@ glm::vec3 bsdf(glm::vec3 from, glm::vec3 &to, glm::vec3 normal,
   // auto glossiness = m_material.glossiness_;
   auto diffuse = m_material.diffuse_;
   glm::vec3 diffuse_v = glm::normalize(RandomDirection() + normal);
+  if (glm::dot(diffuse_v, normal) < 0.0) diffuse_v = -diffuse_v;
 
-  // auto reflected_v = glm::reflect(from, normal);
-  //  auto reflected_angle = glm::dot(reflected_v, o_normal);
-  // if (glm::dot(diffuse_v, normal) < 0.0) diffuse_v = -diffuse_v;
+  auto specular_v = glm::reflect(from, normal);
+  // auto reflected_angle = glm::dot(reflected_v, o_normal);
 
   // float ra = specular + (1 - specular) * pow(1 - reflected_angle, 5);
   // bool is_specular = (rvalue() < ra);
 
-  to = diffuse_v;
+  to = glm::mix(diffuse_v, specular_v, m_material.glossiness_);
   // to = diffuse_v;
   //  if (is_specular)
   //    new_ray = reflected_v;
