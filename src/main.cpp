@@ -3,8 +3,9 @@
 
 #include <PathTracer/pathtracer.hpp>
 #include <iostream>
+#include <chrono>
 
-#define WIDTH 1280
+#define WIDTH 480
 #define HEIGHT 480
 
 int SDL_main(int argc, char* argv[]) {
@@ -44,8 +45,19 @@ int SDL_main(int argc, char* argv[]) {
       }
     }
     SDL_LockSurface(window_surface);
+    using namespace std::chrono;
 
-    renderer.Trace(10);
+    auto begin = high_resolution_clock::now();
+
+    renderer.Trace(1);
+
+    auto end = high_resolution_clock::now();
+
+    std::cout << "time: "
+              << (duration_cast<duration<float, std::ratio<1, 1>>>(end - begin)
+                      .count())
+              << std::endl;
+
     renderer.Export(static_cast<uint32_t*>(window_surface->pixels));
     /* Unlock the surface */
     SDL_UnlockSurface(window_surface);

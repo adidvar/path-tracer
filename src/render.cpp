@@ -167,7 +167,7 @@ bool Renderer::PathTrace(Ray &ray, glm::vec3 &color) {
 }
 
 glm::vec3 Renderer::TracePixel(unsigned int x, unsigned int y) {
-  float aspect_ratio = m_width / m_height;
+  float aspect_ratio = (float)m_width / m_height;
 
   glm::vec2 screen_coord{aspect_ratio * ((float)x / m_width * 2.0 - 1),
                          (float)y / m_height * 2.0 - 1};
@@ -175,12 +175,16 @@ glm::vec3 Renderer::TracePixel(unsigned int x, unsigned int y) {
 
   glm::vec3 color{1, 1, 1};
 
-  while (PathTrace(ray, color)) {
-  };
+  int max_bounce = 6;
+  int i = 0;
+  for (; i < max_bounce && PathTrace(ray, color); i++) {
+  }
+
+  if (i == max_bounce) return {0, 0, 0};
 
   return color;
 }
 
 glm::vec3 &Renderer::Pixel(unsigned int x, unsigned int y) {
-  return m_screen_buffer[y * m_width + x];
+  return m_screen_buffer[(m_height - y - 1) * m_width + x];
 }
