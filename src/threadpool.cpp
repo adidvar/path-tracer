@@ -1,6 +1,5 @@
-#include "threadpool.h"
-
-#include <cassert>
+#include <PathTracer/pathtracer.hpp>
+/*
 
 constexpr static uint64_t k_one = 1;
 
@@ -40,3 +39,4 @@ void ThreadPool::ThreadCode(size_t i, std::function<void()> function) {
     m_flags &= ~(k_one << i);
   }
 }
+*/

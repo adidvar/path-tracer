@@ -1,18 +1,6 @@
-#include "render.h"
+#include <PathTracer/pathtracer.hpp>
 
-#include <array>
-#include <chrono>
-#include <fstream>
-#include <glm/gtx/transform.hpp>
-#include <iostream>
-
-#include "bsdf.h"
-#include "camera.h"
-#include "nrandom.h"
-#include "search.h"
-#include "skybox.h"
-#include "threadpool.h"
-
+/*
 glm::vec3 clamp_color(glm::vec3 color) {
   return glm::clamp(color, glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
 }
@@ -30,7 +18,7 @@ SkyBox skybox;
 glm::vec3 RayTrace(glm::vec3 ray_point, glm::vec3 ray_normal) {
   glm::vec3 light = {0, 0, 0};
   glm::vec3 color = {1, 1, 1};
-  HitInfo info;
+  Hit info;
 
   for (size_t i = 0; i < 10; i++) {
     bool intersect = FindInterception(ray_point, ray_normal, info);
@@ -100,18 +88,12 @@ void render(uint32_t* scene) {
 
       glm::vec3 sum = buffer[x][y] * (1.0f);
 
-      /*
       for (int dx = -1; dx <= 1; dx++)
-        for (int dy = -1; dy <= 1; dy++) 
+        for (int dy = -1; dy <= 1; dy++)
           if ( ! (x==0 && y==0))
           sum += buffer[x + dx][y + dy] * (1.0f/16);
-          */
 
-
-
-
-      scene[WIDTH * y + x] =
-          process_and_convert_color(sum / float(iteration));
+scene[WIDTH * y + x] = process_and_convert_color(sum / float(iteration));
     }
   }
 
@@ -120,4 +102,85 @@ void render(uint32_t* scene) {
                                                                      begin)
                    .count()
             << std::endl;
+}
+*/
+glm::vec3 ClampVec3(glm::vec3 color) {
+  return glm::clamp(color, glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
+}
+
+uint32_t ToRBGA(glm::vec3 color) {
+  color = ClampVec3(color);
+  uint8_t r = 255.0f * color.x;
+  uint8_t g = 255.0f * color.y;
+  uint8_t b = 255.0f * color.z;
+  return ((uint32_t)r << 16 | (uint32_t)g << 8 | (uint32_t)b << 0);
+}
+
+Renderer::Renderer(size_t width, size_t height)
+    : m_width(width),
+      m_height(height),
+      m_iterations(0),
+      m_screen_buffer(new glm::vec3[width * height]) {}
+
+Renderer::~Renderer() {}
+
+void Renderer::Trace(size_t iteration) {
+  for (size_t it = 0; it < iteration; ++it)
+    for (size_t x = 0; x < m_width; ++x)
+      for (size_t y = 0; y < m_height; ++y) {
+        Pixel(x, y) += TracePixel(x, y);
+      }
+  m_iterations += iteration;
+}
+
+void Renderer::Export(uint32_t *buffer) {
+  float scale_factor = 1.0 / m_iterations;
+  for (auto i = 0; i < m_width * m_height; i++)
+    buffer[i] = ToRBGA(scale_factor * m_screen_buffer[i]);
+}
+
+bool Renderer::PathTrace(Ray &ray, glm::vec3 &color) {
+  auto hit = m_scene.Intersect(ray);
+
+  if (!hit.has_value()) {
+    color *= m_skybox.Get(ray.direction);
+    return false;
+  }
+
+  Hit info = hit.value();
+
+  const Material *m_material = info.material;
+
+  if (glm::length(m_material->light_power_) > 0) {
+    color *= m_material->diffuse_ * m_material->light_power_;
+    return false;
+  }
+
+  glm::vec3 to;
+  auto bsdf_result = bsdf(ray.direction, to, info.normal, *m_material);
+  color *= bsdf_result;
+
+  ray.point = info.position;
+  ray.direction = to;
+
+  return true;
+}
+
+glm::vec3 Renderer::TracePixel(unsigned int x, unsigned int y) {
+  float aspect_ratio = m_width / m_height;
+
+  glm::vec2 screen_coord{aspect_ratio * ((float)x / m_width * 2.0 - 1),
+                         (float)y / m_height * 2.0 - 1};
+  auto ray = m_camera.GetRayFromCamera(screen_coord);
+
+  glm::vec3 color{1, 1, 1};
+
+  while (PathTrace(ray, color)) {
+  };
+
+  return color;
+}
+
+glm::vec3 &Renderer::Pixel(unsigned int x, unsigned int y) {
+  return m_screen_buffer[y * m_width + x];
 }

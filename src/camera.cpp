@@ -1,24 +1,26 @@
-#include "camera.h"
+#include <PathTracer/pathtracer.hpp>
 
-#include <cmath>
+unsigned int fov_ = 90;
+float focus_distance_ = 20;
+float blue_power = 0.2;
 
-#include "nrandom.h"
-
-const Camera camera;
+glm::vec3 point_ = {0, -2, -9};
+glm::vec3 direction_ = {0, 0, 1};
+const glm::vec3 vertical_direction_ = {0, 1, 0};
 
 Camera::Camera() {}
 
-std::pair<glm::vec3, glm::vec3> Camera::GetRayFromCamera(float x,
-                                                         float y) const {
+Ray Camera::GetRayFromCamera(glm::vec2 screen_pos) const {
   glm::vec3 vertical_step = glm::normalize(vertical_direction_);
   glm::vec3 horizonatal_step =
       glm::normalize(glm::cross(vertical_step, direction_));
 
   glm::vec3 start_point =
-      point_ + blue_power * (vertical_step * RandomNormalValue() +
-                             horizonatal_step * RandomNormalValue());
+      point_ + blue_power * (vertical_step * Random::NormalValue() +
+                             horizonatal_step * Random::NormalValue());
 
-  glm::vec3 matrix_point = x * horizonatal_step + y * vertical_step;
+  glm::vec3 matrix_point =
+      screen_pos.x * horizonatal_step + screen_pos.y * vertical_step;
 
   glm::vec3 direction;
   direction = glm::normalize(matrix_point +
@@ -26,5 +28,5 @@ std::pair<glm::vec3, glm::vec3> Camera::GetRayFromCamera(float x,
 
   auto plane_point = focus_distance_ * direction + point_;
 
-  return {start_point, plane_point - start_point};
+  return {start_point, glm::normalize(plane_point - start_point)};
 }

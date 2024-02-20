@@ -1,8 +1,7 @@
 #ifndef MATERIALS_H
 #define MATERIALS_H
 
-#include <glm/glm.hpp>
-#include <random>
+#include "pch.hpp"
 
 struct Material {
   Material(glm::vec3 diffuse, float light_power, float glossiness,

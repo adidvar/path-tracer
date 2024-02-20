@@ -1,15 +1,14 @@
 #include <SDL2/SDL.h>
 #include <stdio.h> /* printf and fprintf */
 
+#include <PathTracer/pathtracer.hpp>
 #include <iostream>
 
-#include "render.h"
-#include "search.h"
+#define WIDTH 1280
+#define HEIGHT 480
 
-// int main() {
 int SDL_main(int argc, char* argv[]) {
-
-  GenerateScene();
+  Renderer renderer(WIDTH, HEIGHT);
 
   SDL_Window* window = NULL;
   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -44,11 +43,12 @@ int SDL_main(int argc, char* argv[]) {
           break;
       }
     }
-  SDL_LockSurface(window_surface);
+    SDL_LockSurface(window_surface);
 
-  render(static_cast<uint32_t*>(window_surface->pixels));
-  /* Unlock the surface */
-  SDL_UnlockSurface(window_surface);
+    renderer.Trace(10);
+    renderer.Export(static_cast<uint32_t*>(window_surface->pixels));
+    /* Unlock the surface */
+    SDL_UnlockSurface(window_surface);
 
     SDL_UpdateWindowSurface(window);
   }

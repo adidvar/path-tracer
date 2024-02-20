@@ -1,11 +1,7 @@
-#ifndef THREADPOOL_H
-#define THREADPOOL_H
+#ifndef THREAD_POOL_HPP
+#define THREAD_POOL_HPP
 
-#include <atomic>
-#include <condition_variable>
-#include <functional>
-#include <mutex>
-#include <vector>
+/*
 
 class ThreadPool {
  public:
@@ -26,5 +22,6 @@ class ThreadPool {
 
   std::vector<std::unique_ptr<std::thread>> m_threads;
 };
+*/
 
 #endif

@@ -1,17 +1,16 @@
 #ifndef BSDF_H
 #define BSDF_H
 
-#include <glm/glm.hpp>
+#include "frandom.hpp"
+#include "material.hpp"
+#include "pch.hpp"
 
-#include "materials.h"
-#include "nrandom.h"
-
-glm::vec3 bsdf(glm::vec3 from, glm::vec3 &to, glm::vec3 normal,
-               const Material &m_material) {
+inline glm::vec3 bsdf(glm::vec3 from, glm::vec3 &to, glm::vec3 normal,
+                      const Material &m_material) {
   // auto specular = m_material.specular_;
   // auto glossiness = m_material.glossiness_;
   auto diffuse = m_material.diffuse_;
-  glm::vec3 diffuse_v = glm::normalize(RandomDirection() + normal);
+  glm::vec3 diffuse_v = glm::normalize(Random::SpherePoint() + normal);
   if (glm::dot(diffuse_v, normal) < 0.0) diffuse_v = -diffuse_v;
 
   auto specular_v = glm::reflect(from, normal);

@@ -1,15 +1,11 @@
-#include "skybox.h"
-#include "glm/ext/scalar_constants.hpp"
+#include <PathTracer/pathtracer.hpp>
 
-#include <cmath>
-#include <iostream>
-
-struct GLight
-{
-    glm::vec3 color;
-    glm::vec3 direction;
-    float edge;
-    float power;
+/*
+struct GLight {
+  glm::vec3 color;
+  glm::vec3 direction;
+  float edge;
+  float power;
 };
 
 std::vector<GLight> kglights{
@@ -22,7 +18,6 @@ std::vector<GLight> kglights{
 SkyBox::SkyBox()
 {
     std::vector<unsigned char> buffer;
-    /*
     //lodepng::load_file(buffer, "skybox.png"); //load the image file with given
     filename unsigned error = lodepng::decode(image_buffer_, width_, height_,
     buffer); //decode the png
@@ -32,7 +27,6 @@ SkyBox::SkyBox()
         std::cout << "decoder error " << error << ": " <<
     lodepng_error_text(error) << std::endl; exit(0);
     }
-*/
 }
 
 const float pi = 3.14159265f;
@@ -48,7 +42,8 @@ glm::vec3 SkyBox::GetGLight(glm::vec3 coord)
     for (auto light : kglights) {
         auto cosine = glm::dot(coord, light.direction);
         if (cosine > light.edge)
-            gillumination += (cosine - light.edge) * (1 / (1 - light.edge)) * light.power
+            gillumination += (cosine - light.edge) * (1 / (1 - light.edge)) *
+light.power
                              * light.color;
     }
     return gillumination;
@@ -75,3 +70,8 @@ glm::vec3 SkyBox::GetSkyBox(glm::vec3 coord)
 
     return skybox_color;
 }
+*/
+
+Skybox::Skybox() {}
+
+glm::vec3 Skybox::Get(glm::vec3 direction) { return {0, 0, 0}; }
