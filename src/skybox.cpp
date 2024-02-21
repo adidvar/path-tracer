@@ -74,4 +74,4 @@ glm::vec3 SkyBox::GetSkyBox(glm::vec3 coord)
 
 Skybox::Skybox() {}
 
-glm::vec3 Skybox::Get(glm::vec3 direction) { return {0, 0, 0}; }
+glm::vec3 Skybox::Get(glm::vec3 direction) { return {1, 1, 1}; }

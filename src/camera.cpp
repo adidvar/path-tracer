@@ -2,7 +2,7 @@
 
 unsigned int fov_ = 90;
 float focus_distance_ = 20;
-float blue_power = 0.001;
+float blue_power = 0.05;
 
 glm::vec3 point_ = {0, -2, -9};
 glm::vec3 direction_ = {0, 0, 1};

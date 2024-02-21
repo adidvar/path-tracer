@@ -15,6 +15,7 @@ class Scene {
   std::vector<Sphere> m_spheres;
   std::vector<Plane> m_plains;
   std::vector<Mesh> m_meshes;
+  std::vector<Triangle> m_triangles;
 };
 
 #endif

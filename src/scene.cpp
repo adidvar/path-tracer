@@ -47,7 +47,10 @@ std::vector<Plane> objects_p{Plane({0, 1, 0}, {0, -10, 0}, plane_m_w),
                              Plane({0, 0, 1}, {10, 0, -10}, plane_m_b),
                              Plane({0, -1, 0}, {0, 10, 0}, plane_m_wl)};
 
-Scene::Scene() : m_spheres(objects_s), m_plains(objects_p) {}
+Scene::Scene()
+    : m_spheres(objects_s),
+      m_plains(objects_p),
+      m_meshes{Mesh("mesh.obj", &plane_m_w, 2, glm::vec3{0, -7, 0})} {}
 
 const static float kmax_search_distance = 99999;
 
@@ -78,7 +81,8 @@ std::optional<Hit> Scene::Intersect(Ray ray) const {
 
   find(m_spheres);
   find(m_plains);
-  // find(m_meshes);
+  find(m_meshes);
+  // find(m_triangles);
 
   if (r_max < kmax_search_distance) return hit;
   return {};

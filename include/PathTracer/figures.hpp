@@ -47,9 +47,29 @@ class Plane {
   Material* m_material;
 };
 
-class Poligon {
+class Triangle {
  public:
-  Poligon();
+  Triangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2, glm::vec3 n,
+           Material& material);
+
+  float Intersect(Ray ray) const;
+
+  glm::vec2 GetUV(glm::vec3 coord) const;
+  glm::vec3 GetNormal(glm::vec3 coord) const;
+  Material* GetMaterial() const;
+
+ private:
+  glm::vec3 v0;
+  glm::vec3 v1;
+  glm::vec3 v2;
+  glm::vec3 n;
+
+  Material* m_material;
+};
+
+class Mesh {
+ public:
+  Mesh(std::string mesh, Material* material, float scale, glm::vec3 pos);
 
   float Intersect(Ray ray) const;
 
@@ -59,20 +79,6 @@ class Poligon {
 
  private:
   Material* m_material;
-};
-
-class Mesh {
- public:
-  Mesh();
-
-  float Intersect(Ray ray) const;
-
-  glm::vec2 GetUV(glm::vec3 coord) const;
-  glm::vec3 GetNormal(glm::vec3 coord) const;
-  Material* GetMaterial() const;
-
- private:
-  Material& m_material;
 };
 
 #endif

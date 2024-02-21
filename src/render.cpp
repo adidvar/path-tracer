@@ -140,6 +140,25 @@ void Renderer::Export(uint32_t *buffer) {
 }
 
 bool Renderer::PathTrace(Ray &ray, glm::vec3 &color) {
+  /*
+  auto hit = m_scene.Intersect(ray);
+
+  if (!hit.has_value()) {
+    color = m_skybox.Get(ray.direction);
+    return false;
+  }
+
+  Hit info = hit.value();
+
+  const Material *m_material = info.material;
+
+  auto distance = glm::distance(info.position, ray.point);
+
+  color = m_material->diffuse_ * (float)(1.0 / distance + 0.5);
+
+  return false;
+*/
+
   auto hit = m_scene.Intersect(ray);
 
   if (!hit.has_value()) {
