@@ -33,6 +33,8 @@ class Filter {
   }
 };
 
+struct BSPNode {};
+
 template <class T>
 class BSP {
  private:
