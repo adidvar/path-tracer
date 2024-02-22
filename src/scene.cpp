@@ -33,24 +33,22 @@ Material light1({0.1, 0.1, 0.1}, 0, 0.3, 0.02);
 Material light2({0.05, 0.05, 0.1}, 0, 0.3, 0.02);
 
 std::vector<Sphere> objects_s{
-    Sphere(glm::vec3{-6, -6, 2}, 4, plane_m_w),
-    Sphere(glm::vec3{-6, -1, 2}, 1, plane_m_w),
-    Sphere(glm::vec3{0, -3, 5.5}, 3, plane_m_w),
-    Sphere(glm::vec3{6, -6, 6}, 4, plane_m_w),
-    Sphere(glm::vec3{0, 0, 3}, 1, plane_m_w),
+    Sphere({-6, -6, 2}, 4, &plane_m_w),  Sphere({-6, -1, 2}, 1, &plane_m_w),
+    Sphere({0, -3, 5.5}, 3, &plane_m_w), Sphere({6, -6, 6}, 4, &plane_m_w),
+    Sphere({0, 0, 3}, 1, &plane_m_w),
 };
 
-std::vector<Plane> objects_p{Plane({0, 1, 0}, {0, -10, 0}, plane_m_w),
-                             Plane({-1, 0, 0}, {10, 0, 10}, plane_m_r),
-                             Plane({1, 0, 0}, {-10, 0, 0}, plane_m_g),
-                             Plane({0, 0, -1}, {0, 0, 10}, plane_m_w),
-                             Plane({0, 0, 1}, {10, 0, -10}, plane_m_b),
-                             Plane({0, -1, 0}, {0, 10, 0}, plane_m_wl)};
+std::vector<Plane> objects_p{Plane({0, -10, 0}, {0, 1, 0}, &plane_m_w),
+                             Plane({10, 0, 10}, {-1, 0, 0}, &plane_m_r),
+                             Plane({-10, 0, 0}, {1, 0, 0}, &plane_m_g),
+                             Plane({0, 0, 10}, {0, 0, -1}, &plane_m_w),
+                             Plane({10, 0, -10}, {0, 0, 1}, &plane_m_b),
+                             Plane({0, 10, 0}, {0, -1, 0}, &plane_m_wl)};
 
 Scene::Scene()
     : m_spheres(objects_s),
       m_plains(objects_p),
-      m_meshes{Mesh("mesh.obj", &plane_m_w, 2, glm::vec3{0, -7, 0})} {}
+      m_meshes{Mesh({0, -7, 4}, 2, &plane_m_w, "mesh.obj")} {}
 
 const static float kmax_search_distance = 99999;
 
@@ -59,24 +57,21 @@ std::optional<Hit> Scene::Intersect(Ray ray) const {
   float r_max = kmax_search_distance;
 
   auto find = [ray, &r_max, &hit]<typename T>(const std::vector<T> &elements) {
-    auto nearest_it = elements.end();
-
+    bool founded = false;
     for (auto it = elements.begin(); it != elements.end(); ++it) {
-      float r = it->Intersect(ray);
+      Ray normal;
+      glm::vec2 uv;
+
+      float r = it->Intersect(ray, normal, uv);
       if (r > 0 && r < r_max) {
         r_max = r;
-        nearest_it = it;
+        hit.position = normal.point;
+        hit.normal = normal.direction;
+        hit.material = it->GetMaterial();
+        hit.texture_uv = uv;
       }
     }
-
-    if (nearest_it == elements.end()) return false;
-
-    glm::vec3 point = ray.point + ray.direction * r_max;
-    hit.position = point;
-    hit.normal = nearest_it->GetNormal(point);
-    hit.texture_uv = nearest_it->GetUV(point);
-    hit.material = nearest_it->GetMaterial();
-    return true;
+    return founded;
   };
 
   find(m_spheres);
