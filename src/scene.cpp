@@ -46,9 +46,10 @@ std::vector<Plane> objects_p{Plane({0, -10, 0}, {0, 1, 0}, &plane_m_w),
                              Plane({0, 10, 0}, {0, -1, 0}, &plane_m_wl)};
 
 Scene::Scene()
-    : m_spheres(objects_s),
-      m_plains(objects_p),
-      m_meshes{Mesh({0, -7, 4}, 2, &plane_m_w, "mesh.obj")} {}
+    : m_spheres(objects_s)
+    , m_plains(objects_p)
+    , m_meshes{Mesh({0, -7, 0}, 2, &plane_m_w, "mesh.obj")}
+{}
 
 const static float kmax_search_distance = 99999;
 

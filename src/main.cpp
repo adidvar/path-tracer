@@ -9,13 +9,13 @@
 #define HEIGHT 480
 
 int SDL_main(int argc, char* argv[]) {
-  Renderer renderer(WIDTH, HEIGHT);
+    Renderer renderer(WIDTH, HEIGHT);
 
-  SDL_Window* window = NULL;
-  if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-    fprintf(stderr, "SDL failed to initialise: %s\n", SDL_GetError());
-    return 1;
-  }
+    SDL_Window* window = NULL;
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        fprintf(stderr, "SDL failed to initialise: %s\n", SDL_GetError());
+        return 1;
+    }
   window =
       SDL_CreateWindow("Path tracing",          /* Title of the SDL window */
                        SDL_WINDOWPOS_UNDEFINED, /* Position x of the window */

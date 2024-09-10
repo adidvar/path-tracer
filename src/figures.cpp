@@ -25,7 +25,7 @@ float Sphere::Intersect(Ray ray, Ray &normal_ray, glm::vec2 &uv) const {
   else {
     float r = (-b - sqrt(discriminant)) / (2.0f * a);
     normal_ray.point = ray.point + r * ray.direction;
-    normal_ray.direction = glm::normalize(ray.point - GetPosition());
+    normal_ray.direction = glm::normalize(normal_ray.point - GetPosition());
     uv = {0, 0};
     return r;
   }

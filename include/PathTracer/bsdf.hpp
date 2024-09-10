@@ -10,27 +10,14 @@ inline glm::vec3 bsdf(glm::vec3 from, glm::vec3 &to, glm::vec3 normal,
   // auto specular = m_material.specular_;
   // auto glossiness = m_material.glossiness_;
   auto diffuse = m_material.diffuse_;
-  glm::vec3 diffuse_v = glm::normalize(Random::SpherePoint() + normal);
-  if (glm::dot(diffuse_v, normal) < 0.0) diffuse_v = -diffuse_v;
+  glm::vec3 cosine_distributed_ray =
+      glm::normalize(Random::SpherePoint() + normal);
 
-  auto specular_v = glm::reflect(from, normal);
-  // auto reflected_angle = glm::dot(reflected_v, o_normal);
+  to = cosine_distributed_ray;
 
-  // float ra = specular + (1 - specular) * pow(1 - reflected_angle, 5);
-  // bool is_specular = (rvalue() < ra);
+  glm::vec3 lambert = m_material.diffuse_;
 
-  to = glm::mix(diffuse_v, specular_v, m_material.glossiness_);
-  // to = diffuse_v;
-  //  if (is_specular)
-  //    new_ray = reflected_v;
-  //  else
-  //  new_ray = glm::normalize(glm::mix(reflected_v, diffuse_v, glossiness));
-
-  // if (is_specular)
-  //   color = light;
-  // else
-  // return RandomDirection() * 0.5f + glm::vec3{1, 1, 1};
-  return diffuse;
+  return lambert;
 }
 
 #endif

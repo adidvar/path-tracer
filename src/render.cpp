@@ -162,8 +162,8 @@ bool Renderer::PathTrace(Ray &ray, glm::vec3 &color) {
   auto hit = m_scene.Intersect(ray);
 
   if (!hit.has_value()) {
-    color *= m_skybox.Get(ray.direction);
-    return false;
+      color *= m_skybox.Get(ray.direction);
+      return false;
   }
 
   Hit info = hit.value();
