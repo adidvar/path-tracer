@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 file(COPY_FILE conanfile.txt ${CMAKE_BINARY_DIR}/conanfile.txt)
+file(COPY_FILE D:/User/Desktop/raytracing/meshes/mesh.obj ${CMAKE_BINARY_DIR}/mesh.obj)
 set(CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR};${CMAKE_PREFIX_PATH}")
 set(CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR};${CMAKE_MODULE_PATH}")
 
