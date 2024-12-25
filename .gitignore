@@ -9,6 +9,9 @@
 *.sln
 *.dir
 
+build
+CMakeUserPresets.json
+
 # Compiled Object files
 *.slo
 *.lo

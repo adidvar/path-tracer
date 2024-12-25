@@ -4,4 +4,6 @@ glm/cci.20220420
 lodepng/cci.20200615
 
 [generators]
+CMakeToolchain
 CMakeDeps
+
