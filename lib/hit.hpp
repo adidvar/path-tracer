@@ -1,8 +1,9 @@
 #ifndef HITINFO_H
 #define HITINFO_H
 
+#include <glm/glm.hpp>
+
 #include "material.hpp"
-#include "pch.hpp"
 
 struct Hit {
   glm::vec3 position;

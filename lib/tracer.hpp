@@ -12,7 +12,5 @@
 #include "render.hpp"
 #include "scene.hpp"
 #include "skybox.hpp"
-#include "texture.hpp"
-#include "threadpool.hpp"
 
 #endif

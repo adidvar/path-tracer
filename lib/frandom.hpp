@@ -1,7 +1,7 @@
 #ifndef NRANDOM_H
 #define NRANDOM_H
 
-#include "pch.hpp"
+#include <glm/glm.hpp>
 
 namespace Random {
 

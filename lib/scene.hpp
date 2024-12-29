@@ -1,9 +1,12 @@
 #ifndef SCENE_HPP
 #define SCENE_HPP
 
+#include <optional>
+#include <vector>
+
 #include "figures.hpp"
 #include "hit.hpp"
-#include "pch.hpp"
+#include "ray.hpp"
 
 class Scene {
  public:

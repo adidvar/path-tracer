@@ -1,1 +1,0 @@
-#include <PathTracer/pathtracer.hpp>

@@ -1,4 +1,4 @@
-#include <PathTracer/pathtracer.hpp>
+#include "frandom.hpp"
 
 static thread_local uint32_t state_ = 99999;
 

@@ -1,4 +1,4 @@
-#include "PathTracer/pathtracer.hpp"
+#include "scene.hpp"
 
 glm::vec3 color = {0.76, 0, 0};
 
@@ -63,6 +63,7 @@ std::optional<Hit> Scene::Intersect(Ray ray) const {
       Ray normal;
       glm::vec2 uv;
 
+      if (!it->AABBIntersect(ray)) continue;
       float r = it->Intersect(ray, normal, uv);
       if (r > 0 && r < r_max) {
         r_max = r;

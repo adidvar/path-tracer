@@ -9,5 +9,5 @@ _A screenshot of the rendered scene._
 ## To do
 
  - Implement support for multiple scene files
- - Integrate an Octree for optimized scene management
- - Add multithreading for faster rendering
+ - Integrate with BVH
+ - Move code to OpenCL

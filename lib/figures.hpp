@@ -1,9 +1,12 @@
 #ifndef FIGURES_H
 #define FIGURES_H
 
+#include <string>
+
+#include "aabb.hpp"
 #include "hit.hpp"
 #include "material.hpp"
-#include "pch.hpp"
+#include "ray.hpp"
 
 /*
  * Default figure interface
@@ -18,18 +21,21 @@
 
 class Object {
  public:
-  Object(glm::vec3 position, float scale, Material* material)
-      : m_position(position), m_scale(scale), m_material(material) {}
+  Object(Material* material) : m_material(material), m_box{AABB::Empty()} {}
 
-  float GetScale() const { return m_scale; }
+  virtual float Intersect(const Ray& ray, Ray& normal_ray,
+                          glm::vec2& uv) const = 0;
+  bool AABBIntersect(const Ray& ray) const { 
+    float tn, tf;
+    return m_box.Intersect(ray, tn, tf);
+  };
+
   Material* GetMaterial() const { return m_material; }
-  glm::vec3 GetPosition() const { return m_position; }
 
-  virtual float Intersect(Ray ray, Ray& normal_ray, glm::vec2& uv) const = 0;
+ protected:
+  AABB m_box;
 
  private:
-  float m_scale;
-  glm::vec3 m_position;
   Material* m_material;
 };
 
@@ -37,25 +43,30 @@ class Sphere final : public Object {
  public:
   Sphere(glm::vec3 position, float scale, Material* material);
 
-  float Intersect(Ray ray, Ray& normal_ray, glm::vec2& uv) const;
+  float Intersect(const Ray& ray, Ray& normal_ray, glm::vec2& uv) const override;
+
+ private:
+  glm::vec3 m_position;
+  float m_scale;
 };
 
 class Plane final : public Object {
  public:
   Plane(glm::vec3 position, glm::vec3 normal, Material* material);
 
-  float Intersect(Ray ray, Ray& normal_ray, glm::vec2& uv) const;
+  float Intersect(const Ray &ray, Ray& normal_ray, glm::vec2& uv) const override;
 
  private:
+  glm::vec3 m_position;
   glm::vec3 m_normal;
 };
 
 class Triangle final : public Object {
  public:
-  Triangle(glm::vec3 position, float scale, Material* material, glm::vec3 v0,
+  Triangle(Material* material, glm::vec3 v0,
            glm::vec3 v1, glm::vec3 v2, glm::vec3 n);
 
-  float Intersect(Ray ray, Ray& normal_ray, glm::vec2& uv) const;
+  float Intersect(const Ray &ray, Ray& normal_ray, glm::vec2& uv) const override;
 
  private:
   glm::vec3 v0;
@@ -69,9 +80,11 @@ class Mesh final : public Object {
   Mesh(glm::vec3 position, float scale, Material* material,
        std::string file_name);
 
-  float Intersect(Ray ray, Ray& normal_ray, glm::vec2& uv) const;
+  float Intersect(const Ray& ray, Ray& normal_ray, glm::vec2& uv) const override;
 
  private:
+  glm::vec3 m_position;
+  float m_scale;
 };
 
 #endif

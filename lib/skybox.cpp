@@ -1,4 +1,4 @@
-#include <PathTracer/pathtracer.hpp>
+#include "skybox.hpp"
 
 /*
 struct GLight {
@@ -74,4 +74,6 @@ glm::vec3 SkyBox::GetSkyBox(glm::vec3 coord)
 
 Skybox::Skybox() {}
 
-glm::vec3 Skybox::Get(glm::vec3 direction) { return {1, 1, 1}; }
+glm::vec3 g_direction{0.0, 1.0, 0.0};
+
+glm::vec3 Skybox::Get(glm::vec3 direction) { return glm::vec3{glm::dot(direction,g_direction)}; }

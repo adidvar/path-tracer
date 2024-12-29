@@ -1,7 +1,9 @@
 #ifndef SKYBOX_HPP
 #define SKYBOX_HPP
 
-#include "pch.hpp"
+#include <vector>
+
+#include <glm/glm.hpp>
 
 class Skybox {
  public:

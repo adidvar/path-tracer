@@ -1,4 +1,9 @@
-#include <PathTracer/pathtracer.hpp>
+#include "render.hpp"
+
+#include "bsdf.hpp"
+
+#include <omp.h>
+#include <iostream>
 
 /*
 glm::vec3 clamp_color(glm::vec3 color) {
@@ -125,18 +130,24 @@ Renderer::Renderer(size_t width, size_t height)
 Renderer::~Renderer() {}
 
 void Renderer::Trace(size_t iteration) {
-  for (size_t it = 0; it < iteration; ++it)
-    for (size_t x = 0; x < m_width; ++x)
-      for (size_t y = 0; y < m_height; ++y) {
-        Pixel(x, y) += TracePixel(x, y);
-      }
+#pragma omp parallel for
+  for (int x = 0; x < m_width; ++x)
+    for (int y = 0; y < m_height; ++y)
+      for (size_t it = 0; it < iteration; ++it) Pixel(x, y) += TracePixel(x, y);
   m_iterations += iteration;
 }
 
 void Renderer::Export(uint32_t *buffer) {
-  float scale_factor = 1.0 / m_iterations;
+  float scale_factor = 1.0 * 1.0 / m_iterations;
+
   for (auto i = 0; i < m_width * m_height; i++)
     buffer[i] = ToRBGA(scale_factor * m_screen_buffer[i]);
+}
+
+void Renderer::Clear() {
+  for (int x = 0; x < m_width; ++x)
+    for (int y = 0; y < m_height; ++y) Pixel(x, y) = glm::vec3(0, 0, 0);
+  m_iterations = 1;
 }
 
 bool Renderer::PathTrace(Ray &ray, glm::vec3 &color) {
@@ -162,8 +173,8 @@ bool Renderer::PathTrace(Ray &ray, glm::vec3 &color) {
   auto hit = m_scene.Intersect(ray);
 
   if (!hit.has_value()) {
-      color *= m_skybox.Get(ray.direction);
-      return false;
+    color *= m_skybox.Get(ray.direction);
+    return false;
   }
 
   Hit info = hit.value();

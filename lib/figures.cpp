@@ -1,4 +1,4 @@
-#include <PathTracer/pathtracer.hpp>
+#include "figures.hpp"
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
@@ -7,16 +7,19 @@
 #include <sstream>
 
 #define TINYOBJLOADER_IMPLEMENTATION
-#include "PAthTracer/tiny_obj_loader.h"
+#include "tiny_obj_loader.h"
 
 Sphere::Sphere(glm::vec3 position, float scale, Material *material)
-    : Object(position, scale, material) {}
+    : Object(material), m_position(position), m_scale(scale) {
+  m_box.AddPoint(m_position + glm::vec3{m_scale});
+  m_box.AddPoint(m_position - glm::vec3{m_scale});
+}
 
-float Sphere::Intersect(Ray ray, Ray &normal_ray, glm::vec2 &uv) const {
-  glm::vec3 oc = ray.point - GetPosition();
+float Sphere::Intersect(const Ray &ray, Ray &normal_ray, glm::vec2 &uv) const {
+  glm::vec3 oc = ray.point - m_position;
   float a = glm::dot(ray.direction, ray.direction);
   float b = 2.0f * glm::dot(oc, ray.direction);
-  float c = glm::dot(oc, oc) - GetScale() * GetScale();
+  float c = glm::dot(oc, oc) - m_scale * m_scale;
   float discriminant = b * b - 4 * a * c;
   // float t1 = (-b - discriminant) / 2 * a, t2 = (-b - discriminant) / 2 * a;
 
@@ -25,21 +28,23 @@ float Sphere::Intersect(Ray ray, Ray &normal_ray, glm::vec2 &uv) const {
   else {
     float r = (-b - sqrt(discriminant)) / (2.0f * a);
     normal_ray.point = ray.point + r * ray.direction;
-    normal_ray.direction = glm::normalize(normal_ray.point - GetPosition());
+    normal_ray.direction = glm::normalize(normal_ray.point - m_position);
     uv = {0, 0};
     return r;
   }
 }
 
 Plane::Plane(glm::vec3 position, glm::vec3 normal, Material *material)
-    : Object(position, 1, material), m_normal(normal) {}
+    : Object(material), m_position(position), m_normal(normal) {
+  m_box = AABB::Full();
+}
 
-float Plane::Intersect(Ray ray, Ray &normal_ray, glm::vec2 &uv) const {
+float Plane::Intersect(const Ray &ray, Ray &normal_ray, glm::vec2 &uv) const {
   float p = glm::dot(ray.direction, m_normal);
 
   if (p >= 0) return -1.0f;
 
-  float d = glm::dot(GetPosition() - ray.point, m_normal) / p;
+  float d = glm::dot(m_position - ray.point, m_normal) / p;
 
   normal_ray.point = ray.point + d * ray.direction;
   normal_ray.direction = m_normal;
@@ -143,7 +148,7 @@ MyMesh cube;
 
 Mesh::Mesh(glm::vec3 position, float scale, Material *material,
            std::string file_name)
-    : Object(position, scale, material) {
+    : Object(material), m_position(position),m_scale(scale) {
   tinyobj::callback_t cb;
   cb.vertex_cb = vertex_cb;
   cb.normal_cb = normal_cb;
@@ -190,8 +195,9 @@ Mesh::Mesh(glm::vec3 position, float scale, Material *material,
   printf("# of materials = %ld\n", cube.materials.size());
 
   for (auto &figure : cube.vertices) {
-    figure *= GetScale();
-    figure += GetPosition();
+    figure *= m_scale;
+    figure += m_position;
+    m_box.AddPoint(figure);
   }
 }
 
@@ -231,7 +237,7 @@ float rayTriangleIntersect(const Ray &ray, const glm::vec3 &v0,
   return d;
 }
 
-float Mesh::Intersect(Ray ray, Ray &normal_ray, glm::vec2 &uv) const {
+float Mesh::Intersect(const Ray &ray, Ray &normal_ray, glm::vec2 &uv) const {
   float min_t = 999999;
   glm::vec3 min_normal;
 
@@ -258,11 +264,11 @@ float Mesh::Intersect(Ray ray, Ray &normal_ray, glm::vec2 &uv) const {
   return -1;
 }
 
-Triangle::Triangle(glm::vec3 position, float scale, Material *material,
+Triangle::Triangle(Material *material,
                    glm::vec3 v0, glm::vec3 v1, glm::vec3 v2, glm::vec3 n)
-    : Object(position, scale, material), v0(v0), v1(v1), v2(v2), n(n) {}
+    : Object(material),v0(v0), v1(v1), v2(v2), n(n) {}
 
-float Triangle::Intersect(Ray ray, Ray &normal_ray, glm::vec2 &uv) const {
+float Triangle::Intersect(const Ray &ray, Ray &normal_ray, glm::vec2 &uv) const {
   float p = glm::dot(ray.direction, n);
 
   if (p >= 0) return -1.0f;

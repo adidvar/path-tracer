@@ -3,7 +3,6 @@
 
 #include "frandom.hpp"
 #include "material.hpp"
-#include "pch.hpp"
 
 inline glm::vec3 bsdf(glm::vec3 from, glm::vec3 &to, glm::vec3 normal,
                       const Material &m_material) {
